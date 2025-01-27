@@ -40,6 +40,19 @@ bool check_args(int argc, char **argv)
     return true;
 }
 
+// Function to log server startup information
+void log_server_startup(int port, const std::string& password) {
+    std::time_t now = std::time(0);
+    std::tm* local_time = std::localtime(&now);
+
+    std::cout << "=============================================" << std::endl;
+    std::cout << "IRC Server Starting..." << std::endl;
+    std::cout << "Time: " << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << std::endl;
+    std::cout << "Port: " << port << std::endl;
+    std::cout << "Password: " << password << std::endl;
+    std::cout << "=============================================" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
     // Check for correct number of arguments
@@ -49,5 +62,20 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    return 0;
+    // Parse command line arguments
+    int port = std::atoi(argv[1]);
+    std::string password = argv[2];
+
+    log_server_startup(port, password);
+
+    try {
+        // Create and run the server
+        Server server(port, password);
+        server.startrun();
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

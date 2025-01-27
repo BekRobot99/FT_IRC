@@ -6,7 +6,7 @@ INCLUDES = -Iincludes
 SRC_DIR = srcs
 OBJ_DIR = objs
 
-SRCS = main.cpp 
+SRCS = main.cpp irc_server.cpp
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
