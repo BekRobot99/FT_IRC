@@ -18,6 +18,48 @@ Server::~Server() {
     close(_listenerSocket);
 }
 
+// Set up the server socket
+void Server::_setup_server_socket() {
+    _listenerSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (_listenerSocket < 0) {
+        std::cerr << "Error: Could not create socket\n";
+        exit(EXIT_FAILURE);
+    }
+
+    // Set socket options
+    int opt = 1;
+    if (setsockopt(_listenerSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        std::cerr << "Error: Could not set socket options\n";
+        exit(EXIT_FAILURE);
+    }
+
+    // Bind the socket
+    struct sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(_serverPort);
+
+    if (bind(_listenerSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
+        std::cerr << "Error: Could not bind socket\n";
+        exit(EXIT_FAILURE);
+    }
+
+    // Listen for incoming connections
+    if (listen(_listenerSocket, SOMAXCONN) < 0) {
+        std::cerr << "Error: Could not listen on socket\n";
+        exit(EXIT_FAILURE);
+    }
+
+    // Add the listener socket to the pollfd vector
+    struct pollfd listenerPollFd;
+    listenerPollFd.fd = _listenerSocket;
+    listenerPollFd.events = POLLIN;
+    _DescriptorsPoll.push_back(listenerPollFd);
+    _numPollDescriptors++;
+
+    std::cout << "Server is listening on port " << _serverPort << "\n";
+}
+
 void Server::startRun() {
     while (true) {
         _handleEvents();
