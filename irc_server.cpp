@@ -75,13 +75,16 @@ void Server::_handleEvents() {
     for (size_t i = 0; i < _numPollDescriptors; ++i) {
         if (_DescriptorsPoll[i].revents & POLLIN) {
             if (_DescriptorsPoll[i].fd == _listenerSocket) {
-                _accept_new_connection();
-            } 
+                _acceptClientConnection();
+            }
+            else {
+                _processClientData(_DescriptorsPoll[i].fd);
+            }
         }
     }
 }
 
-void Server::_accept_new_connection() {
+void Server::_acceptClientConnection() {
     struct sockaddr_in clientAddr;
     socklen_t clientAddrLen = sizeof(clientAddr);
     int clientSocket = accept(_listenerSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
@@ -105,4 +108,19 @@ void Server::_accept_new_connection() {
     _clientsBySocket[clientSocket] = newClient;
 
     std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << "\n";
+}
+
+// Parse incoming data from a client
+void Server::_processClientData(int fd) {
+    
+    char buffer[1024];
+    ssize_t bytesRead = recv(fd, buffer, sizeof(buffer), 0);
+    if (bytesRead <= 0) {
+        _handleClientDisconnection(&_clientsBySocket[fd]);
+        return;
+    }
+}
+
+void Server::_handleClientDisconnection(Client* client) {
+    //Ali create a client class and quit message and call disconnect client function
 }

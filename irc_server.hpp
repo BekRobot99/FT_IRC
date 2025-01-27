@@ -9,6 +9,7 @@
 #include <ctime>
 #include <poll.h>
 #include <arpa/inet.h>
+#include "Client.hpp"
 
 class Server
 {
@@ -32,5 +33,8 @@ class Server
     private:
         void					_acceptClientConnection();
         void                   _handleEvents();
-        
-}
+        void                   _processClientData(int fd);
+        void                    _handleClientDisconnection(Client* client);
+};
+
+#endif
