@@ -122,5 +122,48 @@ void Server::_processClientData(int fd) {
 }
 
 void Server::_handleClientDisconnection(Client* client) {
-    //Ali create a client class and quit message and call disconnect client function
+    std::string exitMessage = ":" + client->_obtainNickname() + " QUIT :Unexpected disconnection";
+    _disconnectClient(client, exitMessage);
+}
+
+// check from here
+// Disconnect a client
+void Server::_disconnectClient(Client* user, std::string exitMessage) {
+    _transmit_to_all_connected_channels(user, exitMessage);
+    _deleteClient(user->getSocket());
+}
+
+// Broadcast a message to all channels a client has joined
+void Server::_transmit_to_all_connected_channels(Client* user, const std::string& msg) {
+    std::vector<std::string> channels = user->get_connected_channels();
+    for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it) {
+        Channel* channel = &_channelsByName[*it];
+        _distribute_msg_to_channel_members(user, channel, msg, false);
+    }
+}
+
+// Send a message to all members of a channel
+void Server::_distribute_msg_to_channel_members(Client* sender, Channel* channel, const std::string& msg, bool includeSender) {
+    std::vector<Client*> members = channel->getMembers();
+    for (std::vector<Client*>::iterator it = members.begin(); it != members.end(); ++it) {
+        if (includeSender || (*it)->getSocket() != sender->getSocket()) {
+            send((*it)->getSocket(), msg.c_str(), msg.size(), 0);
+        }
+    }
+}
+
+// Remove a client from the server
+void Server::_deleteClient(int clientFd) {
+    close(clientFd);
+    _clientsBySocket.erase(clientFd);
+
+    for (std::vector<struct pollfd>::iterator it = _DescriptorsPoll.begin(); it != _DescriptorsPoll.end(); ++it) {
+        if (it->fd == clientFd) {
+            _DescriptorsPoll.erase(it);
+            _numPollDescriptors--;
+            break;
+        }
+    }
+
+    std::cout << "Client disconnected\n";
 }

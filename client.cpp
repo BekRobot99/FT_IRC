@@ -4,10 +4,12 @@
 #include <unistd.h>
 
 // Default constructor
-Client::Client() : _fd(-1), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(pass), _activeChannel(nullptr), _hostname(""), _servername("") {}
+Client::Client() : _fd(-1), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(STATUS_PASS), _activeChannel(nullptr), _hostname(""), _servername("") {}
+
 // Parameterized constructor
-Client::Client(int fd) : _fd(fd), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(pass), _activeChannel(nullptr), _hostname(""), _servername("") {}
-n// Destructor
+Client::Client(int fd) : _fd(fd), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(STATUS_PASS), _activeChannel(nullptr), _hostname(""), _servername("") {}
+
+// Destructor
 Client::~Client() {
     if (_fd != -1) {
         close(_fd);
@@ -40,7 +42,7 @@ Client& Client::operator=(const Client& other) {
         _registrationStatus = other._registrationStatus;
         _joinedChannels = other._joinedChannels;
         _activeChannel = other._activeChannel;
-       _inputBuffer = other._inputBufferr;
+       _inputBuffer = other._inputBuffer;
         _outputBuffer = other._outputBuffer;
         _responseBuffer = other._responseBuffer;
         _fd = other._fd;
@@ -49,6 +51,14 @@ Client& Client::operator=(const Client& other) {
 }
 
 // Getters
-std::string Client::_obtainNickname() const {
+std::string Client::_obtainNickname() const { // Get the client's nickname
     return _clientNickname;
+}
+
+std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
+    return _joinedChannels;
+}
+
+int Client::getSocket() const { // Get the client's file descriptor
+    return _fd;
 }

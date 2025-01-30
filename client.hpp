@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 #include <vector>
+
+class Channel;
 // Enum to represent the client's registration status
 enum ClientStatus {
     STATUS_NICK,       // Client has sent the NICK command
@@ -32,5 +34,8 @@ public:
     Client(const Client& other);                                        // Copy constructor
     Client& operator=(const Client& other);                             // Assignment operator
     
-     std::string                     _obtainNickname() const;               // Get the client's nickname
+    std::string                     _obtainNickname() const;               // Get the client's nickname
+    std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
+    int                             getSocket() const;                     // Get the client's file descriptor
+};
 #endif
