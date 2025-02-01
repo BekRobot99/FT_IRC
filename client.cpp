@@ -63,24 +63,3 @@ int Client::getSocket() const { // Get the client's file descriptor
     return _fd;
 }
 
-private:
-    std::string _buffer; // Buffer for stopped clients
-    bool _is_stopped;    // Flag to indicate if the client is stopped
-
-    public:
-        Client(int fd) : _fd(fd), _is_stopped(false) {}
-
-        void set_stopped(bool value) { _is_stopped = value; }
-        bool is_stopped() const { return _is_stopped; }
-
-        void append_to_buffer(const std::string& data) {
-            _buffer += data;
-        }
-
-        std::string get_buffer() const {
-            return _buffer;
-        }
-
-        void clear_buffer() {
-            _buffer.clear();
-        }

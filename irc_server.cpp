@@ -119,6 +119,24 @@ void Server::_processClientData(int fd) {
         _handleClientDisconnection(&_clientsBySocket[fd]);
         return;
     }
+
+     buffer[bytesRead] = '\0';
+    _fd_to_client[fd].append_to_buffer(buffer);
+
+    if (_fd_to_client[fd].is_stopped()) {
+        // Client is stopped; buffer the data and return
+        return;
+    }
+
+    std::string& clientBuffer = _fd_to_client[fd].get_buffer();
+    size_t pos;
+    while ((pos = clientBuffer.find('\n')) != std::string::npos) {
+        std::string message = clientBuffer.substr(0, pos);
+        clientBuffer.erase(0, pos + 1);
+
+        // Process the complete command
+        _process_command(fd, message);
+    }
 }
 
 void Server::_handleClientDisconnection(Client* client) {
