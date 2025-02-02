@@ -120,15 +120,15 @@ void Server::_processClientData(int fd) {
         return;
     }
 
-     buffer[bytesRead] = '\0';
-    _fd_to_client[fd].append_to_buffer(buffer);
+    buffer[bytesRead] = '\0';
+    _clientsBySocket[fd].append_to_buffer(buffer);
 
-    if (_fd_to_client[fd].is_stopped()) {
+    if (_clientsBySocket[fd].is_stopped()) {
         // Client is stopped; buffer the data and return
         return;
     }
 
-    std::string& clientBuffer = _fd_to_client[fd].get_buffer();
+    std::string& clientBuffer = _clientsBySocket[fd].get_buffer();
     size_t pos;
     while ((pos = clientBuffer.find('\n')) != std::string::npos) {
         std::string message = clientBuffer.substr(0, pos);
@@ -138,6 +138,24 @@ void Server::_processClientData(int fd) {
         _process_command(fd, message);
     }
 }
+
+void Server::_process_command(int clientSocket, const std::string& rawCommand) {
+    std::vector<std::string> commandParts = _tokenizeString(rawCommand, ' ');
+    if (commandParts.empty()) return;
+}
+
+std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
+    std::vector<std::string> result;
+    std::string fragment;
+    std::istringstream stream(input);
+    
+    while (std::getline(stream, fragment, separator)) {
+        result.push_back(fragment);
+    }
+    
+    return result;
+}
+
 
 void Server::_handleClientDisconnection(Client* client) {
     std::string exitMessage = ":" + client->_obtainNickname() + " QUIT :Unexpected disconnection";
@@ -175,7 +193,7 @@ void Server::_deleteClient(int clientFd) {
     close(clientFd);
     _clientsBySocket.erase(clientFd);
 
-    for (std::vector<struct pollfd>::iterator it = _DescriptorsPoll.begin(); it != _DescriptorsPoll.end(); ++it) {
+    for (std::vector<struct fdpoll>::iterator it = _DescriptorsPoll.begin(); it != _DescriptorsPoll.end(); ++it) {
         if (it->fd == clientFd) {
             _DescriptorsPoll.erase(it);
             _numPollDescriptors--;
