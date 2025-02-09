@@ -33,6 +33,7 @@ public:
     ~Client();                                                          // Destructor
     Client(const Client& other);                                        // Copy constructor
     Client& operator=(const Client& other);                             // Assignment operator
+    bool                           is_registered() const;               // Check if the client is fully registered
     
     std::string                     _obtainNickname() const;               // Get the client's nickname
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
