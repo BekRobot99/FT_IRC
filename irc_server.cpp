@@ -142,6 +142,22 @@ void Server::_processClientData(int fd) {
 void Server::_process_command(int clientSocket, const std::string& rawCommand) {
     std::vector<std::string> commandParts = _tokenizeString(rawCommand, ' ');
     if (commandParts.empty()) return;
+
+        std::string commandName = commandParts[0];
+    std::vector<std::string> commandArgs(commandParts.begin() + 1, commandParts.end());
+
+    // Handle the command
+    if (commandName == "PASS") {
+        _handle_pass(&_clientsBySocket[clientSocket], commandArgs);
+}
+}
+
+// Handle PASS command
+void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR :Not enough parameters (PASS)\r\n", 36, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
