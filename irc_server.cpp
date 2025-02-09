@@ -158,6 +158,11 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR :Not enough parameters (PASS)\r\n", 36, 0);
         return;
     }
+
+    if (user->is_registered()) {
+        send(user->getSocket(), "ERROR :You may not reregister\r\n", 30, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
