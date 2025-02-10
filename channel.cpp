@@ -16,3 +16,8 @@ Channel::~Channel() {}
 const std::vector<Client*>& Channel::getMembers() const {
     return _members;
 }
+
+// Set the channel password
+void Channel::storePassword(const std::string& password) {
+    _accessKey = password;
+}

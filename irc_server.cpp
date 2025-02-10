@@ -168,6 +168,7 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR :Password incorrect\r\n", 26, 0);
         return;
     }
+    user->storePassword(credentials[0]);
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
