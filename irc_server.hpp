@@ -47,6 +47,9 @@ class Server
         // Commands Handlers 
         void					_handle_pass(Client* user, std::vector<std::string> credentials);
         void					_handle_nick(Client* user, std::vector<std::string> credentials);
+
+        // Utils
+        bool					_checkNicknameValid(const std::string& nickname);
 };
 
 #endif

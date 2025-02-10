@@ -179,6 +179,12 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR : No nickname given\r\n", 26, 0);
         return;
     }
+
+    std::string nickname = credentials[0];
+    if (!_checkNicknameValid(nickname)) {
+        send(user->getSocket(), "ERROR : Erroneous nickname\r\n", 27, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
@@ -223,6 +229,20 @@ void Server::_distribute_msg_to_channel_members(Client* sender, Channel* channel
             send((*it)->getSocket(), msg.c_str(), msg.size(), 0);
         }
     }
+}
+
+// Check if a nickname is valid
+bool Server::_checkNicknameValid(const std::string& nickname) {
+    if (nickname.empty() || nickname.size() > 9) {
+        return false;
+    }
+
+    for (std::string::const_iterator it = nickname.begin(); it != nickname.end(); ++it) {
+        if (!isalnum(*it) && *it != '_' && *it != '-') {
+            return false;
+        }
+    }
+    return true;
 }
 
 // Remove a client from the server
