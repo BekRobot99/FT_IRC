@@ -43,7 +43,10 @@ class Server
         void					_deleteClient(int clientFd);
         void                    _process_command(int clientSocket, const std::string& rawCommand);
         std::vector<std::string> _tokenizeString(const std::string& input, char separator);
-        vvoid					_handle_pass(Client* user, std::vector<std::string> credentials);
+
+        // Commands Handlers 
+        void					_handle_pass(Client* user, std::vector<std::string> credentials);
+        void					_handle_nick(Client* user, std::vector<std::string> credentials);
 };
 
 #endif

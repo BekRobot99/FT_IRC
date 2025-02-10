@@ -149,7 +149,9 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
     // Handle the command
     if (commandName == "PASS") {
         _handle_pass(&_clientsBySocket[clientSocket], commandArgs);
-}
+    } else if (commandName == "NICK") {
+        _handle_nick(&_clientsBySocket[clientSocket], commandArgs);
+    } 
 }
 
 // Handle PASS command
@@ -169,6 +171,14 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
         return;
     }
     user->storePassword(credentials[0]);
+}
+
+// Handle NICK command
+void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR : No nickname given\r\n", 26, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
