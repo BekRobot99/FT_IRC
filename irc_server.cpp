@@ -190,6 +190,14 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR : Nickname is already in use\r\n", 35, 0);
         return;
     }
+
+    user->updateUsername(nickname); // updateUsername is a method in the Client class will be implemented by ali
+    _registeredUsernames.push_back(nickname);
+
+    if (user->is_registered()) {
+        send(user->getSocket(), "ERROR : Broadcast nickname change to all channels the client is in\r\n", 67, 0);
+        _notifyAllSubscribedChannels(user, "NICK " + nickname);
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
@@ -258,6 +266,25 @@ bool Server::_isUsernameTaken(const std::string& username) {
         }
     }
     return false;
+}
+
+// Broadcast a message to all channels a client has joined
+void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& message) {
+    std::vector<std::string> subscribedChannels = sender->getSubscribedChannels();
+    for (std::vector<std::string>::iterator it = subscribedChannels.begin(); it != subscribedChannels.end(); ++it) {
+        Channel* currentChannel = &_channelMap[*it];
+        _distributeMessageToChannelMembers(sender, currentChannel, message, false);
+    }
+}
+
+// Send a message to all members of a channel
+void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender) {
+    std::vector<Client*> members = channel->getMembers();
+    for (std::vector<Client*>::iterator it = members.begin(); it != members.end(); ++it) {
+        if (includeSender || (*it)->getSocket() != sender->getSocket()) {
+            send((*it)->getSocket(), msg.c_str(), msg.size(), 0);
+        }
+    }
 }
 
 // Remove a client from the server

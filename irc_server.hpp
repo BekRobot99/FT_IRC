@@ -51,6 +51,8 @@ class Server
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
         bool					_isUsernameTaken(const std::string& username);
+        void                   _distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender);
+        void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message);
 };
 
 #endif

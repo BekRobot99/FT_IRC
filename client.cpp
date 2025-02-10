@@ -66,3 +66,4 @@ int Client::getSocket() const { // Get the client's file descriptor
 bool Client::is_registered() const {
     return _registrationStatus == STATUS_REGISTERED;
 }
+
