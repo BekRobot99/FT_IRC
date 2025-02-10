@@ -50,6 +50,7 @@ class Server
 
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
+        bool					_isUsernameTaken(const std::string& username);
 };
 
 #endif

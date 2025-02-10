@@ -185,6 +185,11 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR : Erroneous nickname\r\n", 27, 0);
         return;
     }
+
+    if (_isUsernameTaken(nickname)) {
+        send(user->getSocket(), "ERROR : Nickname is already in use\r\n", 35, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
@@ -243,6 +248,16 @@ bool Server::_checkNicknameValid(const std::string& nickname) {
         }
     }
     return true;
+}
+
+// Check if a username is already in use
+bool Server::_isUsernameTaken(const std::string& username) {
+    for (std::vector<std::string>::iterator it = _registeredUsernames.begin(); it != _registeredUsernames.end(); ++it) {
+        if (*it == username) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Remove a client from the server
