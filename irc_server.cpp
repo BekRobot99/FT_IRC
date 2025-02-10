@@ -163,6 +163,11 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR :You may not reregister\r\n", 30, 0);
         return;
     }
+
+    if (credentials[0] != _serverPassword) {
+        send(user->getSocket(), "ERROR :Password incorrect\r\n", 26, 0);
+        return;
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
