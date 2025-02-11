@@ -38,6 +38,7 @@ public:
     std::string                     _obtainNickname() const;               // Get the client's nickname
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
     int                             getSocket() const;                     // Get the client's file descriptor
+    void                            updateUsername(const std::string& newUsername); // Set the client's nickname
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
@@ -59,5 +60,6 @@ private:
         void clear_buffer() {
             _buffer.clear();
         }
+        
 };
 #endif
