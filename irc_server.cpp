@@ -143,7 +143,7 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
     std::vector<std::string> commandParts = _tokenizeString(rawCommand, ' ');
     if (commandParts.empty()) return;
 
-        std::string commandName = commandParts[0];
+    std::string commandName = commandParts[0];
     std::vector<std::string> commandArgs(commandParts.begin() + 1, commandParts.end());
 
     // Handle the command
@@ -151,7 +151,9 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_pass(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "NICK") {
         _handle_nick(&_clientsBySocket[clientSocket], commandArgs);
-    } 
+    } else if (commandName == "USER") {
+        _handle_user(&_clientsBySocket[clientSocket], commandArgs);
+    }
 }
 
 // Handle PASS command
@@ -199,6 +201,15 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
         _notifyAllSubscribedChannels(user, "NICK " + nickname);
     }
 }
+
+// Handle USER command
+void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
+    if (credentials.size() < 4) {
+        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+        return;
+    }
+}
+
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
