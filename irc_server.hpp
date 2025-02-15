@@ -26,6 +26,7 @@ class Server
         std::vector<struct fdpoll>		_DescriptorsPoll;
         std::map<int, Client>			_clientsBySocket;
         std::map<std::string, Channel>	_channelsByName;
+        std::vector<std::string>		_registeredUsernames;
 
     public:
         Server(int port, std::string password);

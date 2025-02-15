@@ -191,7 +191,7 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
         return;
     }
 
-    user->updateUsername(nickname); // updateUsername is a method in the Client class will be implemented by ali
+    user->updateUsername(nickname);
     _registeredUsernames.push_back(nickname);
 
     if (user->is_registered()) {
@@ -270,9 +270,9 @@ bool Server::_isUsernameTaken(const std::string& username) {
 
 // Broadcast a message to all channels a client has joined
 void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& message) {
-    std::vector<std::string> subscribedChannels = sender->getSubscribedChannels();
+    std::vector<std::string> subscribedChannels = sender->getSubscribedChannels(); // get the channels the client has joined must done in the client class by ali
     for (std::vector<std::string>::iterator it = subscribedChannels.begin(); it != subscribedChannels.end(); ++it) {
-        Channel* currentChannel = &_channelMap[*it];
+        Channel* currentChannel = &_channelsByName[*it];
         _distributeMessageToChannelMembers(sender, currentChannel, message, false);
     }
 }
