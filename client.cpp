@@ -70,3 +70,7 @@ bool Client::is_registered() const {
 void Client::updateUsername(const std::string& newUsername) {
     _clientNickname= newUsername; // Set the client's nickname (ewUsername = new nickname)
 }
+
+std::map<std::string, Channel*> Client::getSubscribedChannels() const {
+    return _joinedChannels;
+}

@@ -41,6 +41,8 @@ public:
 
     void                            updateUsername(const std::string& newUsername); // Set the client's nickname
 
+    std::map<std::string, Channel*> getSubscribedChannels() const;        // Get the channels the client has joined
+
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
