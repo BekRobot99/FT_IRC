@@ -264,6 +264,17 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
     _distributeMessageToChannelMembers(user, channel, joinMessage, true);
 }
 
+// Handle PRIVMSG command
+void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials) {
+    if (credentials.size() < 2) {
+        send(user->getSocket(), "ERROR : No recipient or message specified\r\n", 43, 0);
+        return;
+    }
+
+    std::string target = credentials[0];
+    std::string message = credentials[1];
+}
+
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
     std::string fragment;
