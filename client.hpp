@@ -43,6 +43,8 @@ public:
    
     std::map<std::string, Channel*> getSubscribedChannels() const;        // Get the channels the client has joined
 
+    void                            enterChannel(const std::string& channelName, Channel* targetChannel);        // Enter a channel
+
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped

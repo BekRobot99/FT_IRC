@@ -75,3 +75,9 @@ void Client::updateUsername(const std::string& newUsername) {
 std::map<std::string, Channel*> Client::getSubscribedChannels() const {
     return _joinedChannels;
 }
+
+void Client::enterChannel(const std::string& channelName, Channel* targetChannel) {
+    _joinedChannels[channelName] = targetChannel;
+    _activeChannel = targetChannel;
+    targetChannel->addMember(this);
+}

@@ -253,6 +253,10 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
         Channel newChannel(channelName);
         _channelsByName[channelName] = newChannel;
     }
+
+    Channel* channel = &_channelsByName[channelName];
+    channel->addMember(user);
+    user->enterChannel(channelName);
 }
 
 

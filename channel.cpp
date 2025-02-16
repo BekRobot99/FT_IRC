@@ -21,3 +21,16 @@ const std::vector<Client*>& Channel::getMembers() const {
 void Channel::storePassword(const std::string& password) {
     _accessKey = password;
 }
+
+// Add a client to the channel
+void Channel::addMember(Client* user) {
+    if (!hasMember(user)) {
+        _members.push_back(user);
+    }
+}
+
+// Check if a client is in the channel
+bool Channel::hasMember(Client* user) const {
+    return std::find(_members.begin(), _members.end(), user) != _members.end();
+}
+

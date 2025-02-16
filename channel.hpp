@@ -28,6 +28,8 @@ public:
     Channel(std::string name);
     ~Channel();
 
+    void                            addMember(Client* user);
+    bool                            hasMember(Client* user) const;
     const std::vector<Client*>&      getMembers() const; // Get the list of clients in the channel
     void                            storePassword(const std::string& password); // Set the channel password
 };
