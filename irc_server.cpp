@@ -232,6 +232,10 @@ void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR :No origin specified (PING)\r\n", 36, 0);
         return;
     }
+
+    std::string origin = credentials[0];
+    std::string pongMessage = ":" + _serverName + " PONG " + _serverName + " :" + origin + "\r\n";
+    send(user->getSocket(), pongMessage.c_str(), pongMessage.size(), 0);
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
