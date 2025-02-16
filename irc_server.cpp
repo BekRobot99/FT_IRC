@@ -220,6 +220,7 @@ void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
     if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty()) // check if the nickname and username are not empty by ali
     {
         user->updateRegistrationStatus(true); // set the registration status of the client by ali
+        _sendWelcomeMessage(user);
     }
 }
 
@@ -308,6 +309,12 @@ void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel
             send((*it)->getSocket(), msg.c_str(), msg.size(), 0);
         }
     }
+}
+
+//welcome new user
+void Server::_sendWelcomeMessage(Client* user) {
+    std::string wlcmMsg = "Welcome to the " + _serverName +  + " IRC server, " + user->_obtainNickname() + "!\r\n";
+    send(user->getSocket(), wlcmMsg.c_str(), wlcmMsg.size(), 0);
 }
 
 // Remove a client from the server
