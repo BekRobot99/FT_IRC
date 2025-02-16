@@ -157,7 +157,9 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_ping(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "JOIN") {
         _handle_join(&_clientsBySocket[clientSocket], commandArgs);
-    } 
+    } else if (commandName == "PRIVMSG") {
+        _handle_privmsg(&_clientsBySocket[clientSocket], commandArgs);
+    }
 }
 
 // Handle PASS command
@@ -257,8 +259,10 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
     Channel* channel = &_channelsByName[channelName];
     channel->addMember(user);
     user->enterChannel(channelName);
-}
 
+    std::string joinMessage = ":" + user->_obtainNickname() + " JOIN " + channelName + "\r\n";
+    _distributeMessageToChannelMembers(user, channel, joinMessage, true);
+}
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
