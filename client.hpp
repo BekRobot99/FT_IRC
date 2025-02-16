@@ -40,6 +40,8 @@ public:
     int                             getSocket() const;                     // Get the client's file descriptor
 
     void                            updateUsername(const std::string& newUsername); // Set the client's nickname
+    void                            storeUsername(const std::string& username); // Set the client's username
+    void                            storeRealname(const std::string& realname); // Set the client's real name
    
     std::map<std::string, Channel*> getSubscribedChannels() const;        // Get the channels the client has joined
 

@@ -72,6 +72,14 @@ void Client::updateUsername(const std::string& newUsername) {
     _clientNickname= newUsername; // Set the client's nickname (ewUsername = new nickname)
 }
 
+void    Client::storeUsername(const std::string& username) {
+    _clientUsername = username;
+}
+
+void    Client::storeRealname(const std::string& realname) {
+    _clientRealname = realname;
+}
+
 std::map<std::string, Channel*> Client::getSubscribedChannels() const {
     return _joinedChannels;
 }
