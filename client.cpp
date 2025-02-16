@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Channel.hpp"
 #include <iostream>
 #include <cstring>
 #include <unistd.h>

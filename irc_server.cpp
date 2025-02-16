@@ -155,6 +155,8 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_user(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "PING") {
         _handle_ping(&_clientsBySocket[clientSocket], commandArgs);
+    } else if (commandName == "JOIN") {
+        _handle_join(&_clientsBySocket[clientSocket], commandArgs);
     } 
 }
 
@@ -234,9 +236,25 @@ void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
     }
 
     std::string origin = credentials[0];
-    std::string pongMessage = ":" + _serverName + " PONG " + _serverName + " :" + origin + "\r\n";
+    std::string pongMessage = ":" + _serverName + " PONG "  + origin + "\r\n";
     send(user->getSocket(), pongMessage.c_str(), pongMessage.size(), 0);
 }
+
+// Handle JOIN command
+void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
+        return;
+    }
+
+    std::string channelName = credentials[0];
+    if (_channelsByName.find(channelName) == _channelsByName.end()) {
+        // Create a new channel
+        Channel newChannel(channelName);
+        _channelsByName[channelName] = newChannel;
+    }
+}
+
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
