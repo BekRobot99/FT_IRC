@@ -56,6 +56,10 @@ std::string Client::_obtainNickname() const { // Get the client's nickname
     return _clientNickname;
 }
 
+std::string Client::_obtainUsername() const {
+    return _clientUsername;
+}
+
 std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
     return _joinedChannels;
 }

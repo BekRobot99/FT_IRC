@@ -37,6 +37,7 @@ public:
     void                            updateRegistrationStatus(bool isRegistered); // Update the client's registration status
 
     std::string                     _obtainNickname() const;               // Get the client's nickname
+    std::string                     _obtainUsername() const;               // Get the client's username
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
     int                             getSocket() const;                     // Get the client's file descriptor
 
