@@ -68,6 +68,10 @@ bool Client::is_registered() const {
     return _registrationStatus == STATUS_REGISTERED;
 }
 
+void Client::updateRegistrationStatus(bool isRegistered) {
+    _registrationStatus = isRegistered ? STATUS_REGISTERED : STATUS_PASS;
+}
+
 void Client::updateUsername(const std::string& newUsername) {
     _clientNickname= newUsername; // Set the client's nickname (ewUsername = new nickname)
 }

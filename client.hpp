@@ -34,6 +34,7 @@ public:
     Client(const Client& other);                                        // Copy constructor
     Client& operator=(const Client& other);                             // Assignment operator
     bool                           is_registered() const;               // Check if the client is fully registered
+    void                            updateRegistrationStatus(bool isRegistered); // Update the client's registration status
 
     std::string                     _obtainNickname() const;               // Get the client's nickname
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
