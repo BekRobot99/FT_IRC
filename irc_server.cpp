@@ -153,7 +153,9 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_nick(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "USER") {
         _handle_user(&_clientsBySocket[clientSocket], commandArgs);
-    }
+    } else if (commandName == "PING") {
+        _handle_ping(&_clientsBySocket[clientSocket], commandArgs);
+    } 
 }
 
 // Handle PASS command
@@ -221,6 +223,14 @@ void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
     {
         user->updateRegistrationStatus(true); // set the registration status of the client by ali
         _sendWelcomeMessage(user);
+    }
+}
+
+// Handle PING command
+void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR :No origin specified (PING)\r\n", 36, 0);
+        return;
     }
 }
 
@@ -299,7 +309,7 @@ void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& mes
         Channel* currentChannel = &_channelsByName[*it];
         _distributeMessageToChannelMembers(sender, currentChannel, message, false);
     }
-} //1
+}
 
 // Send a message to all members of a channel
 void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender) {

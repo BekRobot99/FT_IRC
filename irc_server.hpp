@@ -50,6 +50,7 @@ class Server
         void					_handle_nick(Client* user, std::vector<std::string> credentials);
         void					_handle_user(Client* user, std::vector<std::string> credentials);
         void                    _sendWelcomeMessage(Client* user);
+        void                    _handle_ping(Client* user, std::vector<std::string> credentials);
         
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
