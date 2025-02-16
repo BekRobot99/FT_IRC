@@ -208,8 +208,20 @@ void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
         send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
         return;
     }
-}
 
+    if (user->is_registered()) {
+        send(user->getSocket(), "ERROR : You may not reregister\r\n", 30, 0);
+        return;
+    }
+
+    user->storeUsername(credentials[0]); // set the username of the client by ali   
+    user->storeRealname(credentials[3]); // set the realname of the client by ali
+
+    if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty()) // check if the nickname and username are not empty by ali
+    {
+        user->updateRegistrationStatus(true); // set the registration status of the client by ali
+    }
+}
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
@@ -286,7 +298,7 @@ void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& mes
         Channel* currentChannel = &_channelsByName[*it];
         _distributeMessageToChannelMembers(sender, currentChannel, message, false);
     }
-}
+} //1
 
 // Send a message to all members of a channel
 void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender) {
