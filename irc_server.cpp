@@ -159,6 +159,8 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_join(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "PRIVMSG") {
         _handle_privmsg(&_clientsBySocket[clientSocket], commandArgs);
+    } else if (commandName == "QUIT") {
+        _handle_quit(&_clientsBySocket[clientSocket], commandArgs);
     }
 }
 
@@ -297,6 +299,18 @@ void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials)
         send(targetClient->getSocket(), privmsg.c_str(), privmsg.size(), 0);
     }
 
+}
+
+// Handle QUIT command
+void Server::_handle_quit(Client* user, std::vector<std::string> credentials) {
+    std::string exitMessage = ":" + user->_obtainNickname() + " QUIT :";
+    if (!credentials.empty()) {
+        exitMessage += credentials[0];
+    }
+    else {
+        exitMessage += "Client disconnected";
+    }
+    _disconnectClient(user, exitMessage);
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
