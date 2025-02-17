@@ -38,6 +38,8 @@ public:
 
     std::string                     _obtainNickname() const;               // Get the client's nickname
     std::string                     _obtainUsername() const;               // Get the client's username
+    std::string                     _obtainHostname() const;               // Get the client's hostname
+    std::string                     _obtainRealname() const;               // Get the client's real name
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
     int                             getSocket() const;                     // Get the client's file descriptor
 
