@@ -60,6 +60,14 @@ std::string Client::_obtainUsername() const {
     return _clientUsername;
 }
 
+std::string Client::_obtainHostname() const {
+    return _hostname;
+}
+
+std::string Client::_obtainRealname() const {
+    return _clientRealname;
+}
+
 std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
     return _joinedChannels;
 }

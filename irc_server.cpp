@@ -163,6 +163,8 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_quit(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "WHO") {
         _handle_who(&_clientsBySocket[clientSocket], commandArgs);
+    } else if (commandName == "TOPIC") {
+        _handle_topic(&_clientsBySocket[clientSocket], commandArgs);
     }
 }
 
@@ -339,6 +341,20 @@ void Server::_handle_who(Client* user, const std::vector<std::string>& credentia
     }
     else {
         // List users matching a nickname mask (will be  implemented after by ramez)
+    }
+}
+
+// Handle TOPIC command
+void Server::_handle_topic(Client* user, const std::vector<std::string>& credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
+        return;
+    }
+
+    std::string channelName = credentials[0];
+    if (_channelsByName.find(channelName) == _channelsByName.end()) {
+        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+        return;
     }
 }
 

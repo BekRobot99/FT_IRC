@@ -56,6 +56,7 @@ class Server
         Client*                 _locateClientByNickname(const std::string& nickname);
         void                    _handle_quit(Client* user, std::vector<std::string> credentials);
         void                    _handle_who(Client* user, std::vector<std::string> credentials);
+        void                    _handle_topic(Client* user, std::vector<std::string> credentials);
         
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
