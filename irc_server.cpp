@@ -273,6 +273,30 @@ void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials)
 
     std::string target = credentials[0];
     std::string message = credentials[1];
+
+    if (target[0] == '#') {
+        // Send message to a channel
+        if (_channelsByName.find(target) == _channelsByName.end()) {
+            send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+            return;
+        }
+
+        Channel* channel = &_channelsByName[target];
+        _distributeMessageToChannelMembers(user, channel, message, false);
+    }
+
+    else {
+        // Send message to a user
+        Client* targetClient = _locateClientByNickname(target);
+        if (!targetClient) {
+            // send error message
+            send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
+            return;
+        }
+        std::string privmsg = ":" + user->_obtainNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+        send(targetClient->getSocket(), privmsg.c_str(), privmsg.size(), 0);
+    }
+
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
@@ -366,6 +390,16 @@ void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel
 void Server::_sendWelcomeMessage(Client* user) {
     std::string wlcmMsg = "Welcome to the " + _serverName +  + " IRC server, " + user->_obtainNickname() + "!\r\n";
     send(user->getSocket(), wlcmMsg.c_str(), wlcmMsg.size(), 0);
+}
+
+// Find a client by nickname
+Client* Server::_locateClientByNickname(const std::string& nickname) {
+    for (std::map<int, Client>::iterator it = _clientsBySocket.begin(); it != _clientsBySocket.end(); ++it) {
+        if (it->second._obtainNickname() == nickname) {
+            return &it->second;
+        }
+    }
+    return NULL;
 }
 
 // Remove a client from the server
