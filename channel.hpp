@@ -32,5 +32,6 @@ public:
     bool                            hasMember(Client* user) const;
     const std::vector<Client*>&      getMembers() const; // Get the list of clients in the channel
     void                            storePassword(const std::string& password); // Set the channel password
+    std::string                     obtainTopic() const; // Get the channel topic
 };
 #endif

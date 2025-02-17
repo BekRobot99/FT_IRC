@@ -356,6 +356,7 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
         send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
         return;
     }
+
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {

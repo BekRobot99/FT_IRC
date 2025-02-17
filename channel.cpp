@@ -34,3 +34,7 @@ bool Channel::hasMember(Client* user) const {
     return std::find(_members.begin(), _members.end(), user) != _members.end();
 }
 
+// get topic of the channel
+std::string Channel::obtainTopic() const {
+    return _discussionTopic;
+}
