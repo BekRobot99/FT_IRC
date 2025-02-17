@@ -38,3 +38,8 @@ bool Channel::hasMember(Client* user) const {
 std::string Channel::obtainTopic() const {
     return _discussionTopic;
 }
+
+// Check if a nickname belongs to a moderator (operator)
+bool Channel::isModerator(const std::string& nickname) const {
+    return std::find(_moderators.begin(), _moderators.end(), nickname) != _moderators.end();
+}

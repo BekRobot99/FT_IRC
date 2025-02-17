@@ -33,5 +33,6 @@ public:
     const std::vector<Client*>&      getMembers() const; // Get the list of clients in the channel
     void                            storePassword(const std::string& password); // Set the channel password
     std::string                     obtainTopic() const; // Get the channel topic
+    bool                            isModerator(const std::string& nickname) const; // Check if a nickname belongs to a moderator (operator)
 };
 #endif

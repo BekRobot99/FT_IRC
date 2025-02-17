@@ -357,6 +357,18 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
         return;
     }
 
+    Channel* channel = &_channelsByName[channelName];
+    if (credentials.size() == 1) {
+        std::string topic = channel->obtainTopic();
+        std::string topicMessage = ":" + _serverName + " 332 " + user->_obtainNickname() + " " + channelName + " :" + topic + "\r\n";
+        send(user->getSocket(), topicMessage.c_str(), topicMessage.size(), 0);
+    }
+    else {
+        if (!channel->isModerator(user)) {
+            send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+            return;
+        }
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
