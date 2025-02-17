@@ -371,6 +371,9 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
 
         std::string newTopic = credentials[1];
         channel->updateDiscussionTopic(newTopic);
+
+        std::string topicMessage = ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + newTopic + "\r\n";
+        _distributeMessageToChannelMembers(user, channel, topicMessage, true);
     }
 }
 
