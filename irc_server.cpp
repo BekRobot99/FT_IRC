@@ -161,6 +161,8 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_privmsg(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "QUIT") {
         _handle_quit(&_clientsBySocket[clientSocket], commandArgs);
+    } else if (commandName == "WHO") {
+        _handle_who(&_clientsBySocket[clientSocket], commandArgs);
     }
 }
 
@@ -311,6 +313,33 @@ void Server::_handle_quit(Client* user, std::vector<std::string> credentials) {
         exitMessage += "Client disconnected";
     }
     _disconnectClient(user, exitMessage);
+}
+
+// Handle WHO command
+void Server::_handle_who(Client* user, const std::vector<std::string>& credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR : No mask specified\r\n", 26, 0);
+        return;
+    }
+
+    std::string mask = credentials[0];
+    if (mask[0] == '#') {
+        // List users in a channel
+        if (_channelsByName.find(mask) == _channelsByName.end()) {
+            send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+            return;
+        }
+
+        Channel* channel = &_channelsByName[mask];
+        std::vector<Client*> members = channel->getMembers();
+        for (std::vector<Client*>::iterator it = members.begin(); it != members.end(); ++it) {
+            std::string whoMessage = ":" + _serverName + " 352 " + user->_obtainNickname() + " " + mask + " " + (*it)->_obtainUsername() + " " + (*it)->_obtainHostname() + " " + _serverName + " " + (*it)->_obtainNickname() + " H :0 " + (*it)->_obtainRealname() + "\r\n";
+            send(user->getSocket(), whoMessage.c_str(), whoMessage.size(), 0);
+        }
+    }
+    else {
+        // List users matching a nickname mask (will be  implemented after by ramez)
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
