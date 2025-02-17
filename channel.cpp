@@ -39,7 +39,13 @@ std::string Channel::obtainTopic() const {
     return _discussionTopic;
 }
 
+// Update the discussion topic
+void Channel::updateDiscussionTopic(const std::string& newTopic) {
+    _discussionTopic = newTopic;
+}
+
 // Check if a nickname belongs to a moderator (operator)
 bool Channel::isModerator(const std::string& nickname) const {
     return std::find(_moderators.begin(), _moderators.end(), nickname) != _moderators.end();
 }
+

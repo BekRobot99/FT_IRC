@@ -34,5 +34,6 @@ public:
     void                            storePassword(const std::string& password); // Set the channel password
     std::string                     obtainTopic() const; // Get the channel topic
     bool                            isModerator(const std::string& nickname) const; // Check if a nickname belongs to a moderator (operator)
+    void                            updateDiscussionTopic(const std::string& newTopic); // Update the discussion topic
 };
 #endif

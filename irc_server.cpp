@@ -368,6 +368,9 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
             send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
             return;
         }
+
+        std::string newTopic = credentials[1];
+        channel->updateDiscussionTopic(newTopic);
     }
 }
 
