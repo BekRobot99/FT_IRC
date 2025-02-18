@@ -499,6 +499,49 @@ Client* Server::_locateClientByNickname(const std::string& nickname) {
     return NULL;
 }
 
+// handle channel mode
+void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& credentials) {
+    
+    if (credentials.size() < 2) {
+        send(user->getSocket(), "ERROR : Not enough parameters (MODE)\r\n", 36, 0);
+         return;
+    }
+
+    std::string channelName = credentials[0];
+    std::string mode = credentials[1];
+
+    if (_channelsByName.find(channelName) == _channelsByName.end()) {
+        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+        return;
+    }
+    
+    Channel* channel = &_channelsByName[channelName];
+    if (!channel->isModerator(user)) {
+        send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+        return;
+    }
+
+   //Handle channel modes (+o, +k)
+    if (mode == "+o") {
+        if (credentials.size() < 3) {
+            send(user->getSocket(), "ERROR : Not enough parameters (MODE +o)\r\n", 40, 0);
+            return;
+        }
+        std::string targetNickname = credentials[2];
+        Client* targetClient = _locateClientByNickname(targetNickname);
+        if (!targetClient || !channel->hasMember(targetClient)) {
+            send(user->getSocket(), "ERROR : User not in channel\r\n", 28, 0);
+            return;
+        }
+        channel->assignModerator(targetClient); // will be tested and implemented in the channel class
+        std::string modeMessage = ":" + user->_obtainNickname() + " MODE " + channelName + " +o " + targetNickname + "\r\n";
+        _distributeMessageToChannelMembers(user, channel, modeMessage, true);
+    } else {
+        send(user->getSocket(), "ERROR : Unsupported mode\r\n", 26, 0);
+    }
+    //other cases will be handled after 
+}
+
 // Remove a client from the server
 void Server::_deleteClient(int clientFd) {
     close(clientFd);

@@ -58,6 +58,8 @@ class Server
         void                    _handle_who(Client* user, std::vector<std::string> credentials);
         void                    _handle_topic(Client* user, std::vector<std::string> credentials);
         void                    _handle_mode(Client* user, std::vector<std::string> credentials);
+        void                   _handle_channel_mode(Client* user, std::vector<std::string> credentials);
+        
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
         bool					_isUsernameTaken(const std::string& username);
