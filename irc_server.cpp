@@ -417,6 +417,16 @@ void Server::_handle_invite(Client* user, const std::vector<std::string>& creden
         send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
         return;
     }
+
+    Channel* channel = &_channelsByName[channelName];
+    if (!channel->isModerator(user)) {
+        send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+        return;
+    }
+
+    channel->addInvitedUser(targetClient);
+    std::string inviteMessage = ":" + user->_obtainNickname() + " INVITE " + nickname + " " + channelName + "\r\n";
+    send(targetClient->getSocket(), inviteMessage.c_str(), inviteMessage.size(), 0);
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
