@@ -55,7 +55,7 @@ private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
 
-    public:
+public:
         Client(int fd) : _fd(fd), _is_stopped(false) {}
 
         void set_stopped(bool value) { _is_stopped = value; }
@@ -72,6 +72,6 @@ private:
         void clear_buffer() {
             _buffer.clear();
         }
-        
+
 };
 #endif
