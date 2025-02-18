@@ -165,8 +165,11 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_who(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "TOPIC") {
         _handle_topic(&_clientsBySocket[clientSocket], commandArgs);
-    }
+    } else if (commandName == "MODE") {
+        _handle_mode(&_clientsBySocket[clientSocket], commandArgs);
+    } 
 }
+     
 
 // Handle PASS command
 void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
@@ -374,6 +377,22 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
 
         std::string topicMessage = ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + newTopic + "\r\n";
         _distributeMessageToChannelMembers(user, channel, topicMessage, true);
+    }
+}
+
+// Handle MODE command
+void Server::_handle_mode(Client* user, const std::vector<std::string>& credentials) {
+    if (credentials.size() < 2) {
+        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+        return;
+    }
+
+    std::string target = credentials[0];
+    if (target[0] == '#') {
+        _handle_channel_mode(user, credentials);
+    } else {
+        _handle_user_mode(user, credentials);
+        send(user->getSocket(), "ERROR : User modes not supported\r\n", 32, 0);
     }
 }
 
