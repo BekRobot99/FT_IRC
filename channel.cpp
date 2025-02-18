@@ -55,3 +55,15 @@ void Channel::assignModerator(const std::string& username) {
         _moderators.push_back(username);
     }
 }
+
+// add invited user
+void Channel::addInvitedUser(Client* user) {
+    if (!isUserInvited(user->_obtainNickname())) {
+        _guestList.push_back(user->_obtainNickname());
+    }
+}
+
+// Check if a nickname is invited
+bool Channel::isUserInvited(const std::string& nickname) const {
+    return std::find(_guestList.begin(), _guestList.end(), nickname) != _guestList.end();
+}

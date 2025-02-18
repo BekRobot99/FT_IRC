@@ -167,10 +167,11 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_topic(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "MODE") {
         _handle_mode(&_clientsBySocket[clientSocket], commandArgs);
-    } 
+    } else if (commandName == "INVITE") {
+        _handle_invite(&_clientsBySocket[clientSocket], commandArgs);
+    }
 }
      
-
 // Handle PASS command
 void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
     if (credentials.empty()) {
@@ -393,6 +394,28 @@ void Server::_handle_mode(Client* user, const std::vector<std::string>& credenti
     } else {
         _handle_user_mode(user, credentials);
         send(user->getSocket(), "ERROR : User modes not supported\r\n", 32, 0);
+    }
+}
+
+// Handle INVITE command
+void Server::_handle_invite(Client* user, const std::vector<std::string>& credentials) {
+   if (credentials.size() < 2) {
+        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+        return;
+    }
+
+    std::string nickname = credentials[0];
+    std::string channelName = credentials[1];
+
+    Client* targetClient = _locateClientByNickname(nickname);
+    if (!targetClient) {
+        send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
+        return;
+    }
+
+    if (_channelsByName.find(channelName) == _channelsByName.end()) {
+        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+        return;
     }
 }
 
