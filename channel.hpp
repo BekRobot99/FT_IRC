@@ -35,5 +35,6 @@ public:
     std::string                     obtainTopic() const; // Get the channel topic
     bool                            isModerator(const std::string& nickname) const; // Check if a nickname belongs to a moderator (operator)
     void                            updateDiscussionTopic(const std::string& newTopic); // Update the discussion topic
+    void                             assignModerator(const std::string& username); // Assign a moderator to the channel
 };
 #endif

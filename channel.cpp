@@ -49,3 +49,9 @@ bool Channel::isModerator(const std::string& nickname) const {
     return std::find(_moderators.begin(), _moderators.end(), nickname) != _moderators.end();
 }
 
+// Assign a moderator to the channel
+void Channel::assignModerator(const std::string& username) {
+    if (!isModerator(username)) {
+        _moderators.push_back(username);
+    }
+}
