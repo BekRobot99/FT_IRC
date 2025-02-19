@@ -38,5 +38,6 @@ public:
     void                             assignModerator(const std::string& username); // Assign a moderator to the channel
     void                            addInvitedUser(Client* user); // Add an invited user
     bool                            isUserInvited(const std::string& nickname) const; // Check if a nickname is invited
+    void                            removeMember(Client* user); // Remove a client from the channel
 };
 #endif

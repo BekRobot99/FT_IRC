@@ -67,3 +67,11 @@ void Channel::addInvitedUser(Client* user) {
 bool Channel::isUserInvited(const std::string& nickname) const {
     return std::find(_guestList.begin(), _guestList.end(), nickname) != _guestList.end();
 }
+
+// Remove a client from the channel
+void Channel::removeMember(Client* user) {
+    std::vector<Client*>::iterator it = std::find(_members.begin(), _members.end(), user);
+    if (it != _members.end()) {
+        _members.erase(it);
+    }
+}

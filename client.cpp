@@ -105,3 +105,4 @@ void Client::enterChannel(const std::string& channelName, Channel* targetChannel
     _activeChannel = targetChannel;
     targetChannel->addMember(this);
 }
+
