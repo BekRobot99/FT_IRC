@@ -173,7 +173,9 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_kick(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "CAP") {
         _handle_cap(&_clientsBySocket[clientSocket], commandArgs);
-    } 
+    } else {
+        send(_clientsBySocket[clientSocket].getSocket(), "ERROR :Unknown command\r\n", 25, 0);
+    }
 }
      
 // Handle PASS command
