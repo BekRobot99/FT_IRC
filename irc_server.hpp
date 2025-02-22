@@ -61,6 +61,8 @@ class Server
         void                   _handle_channel_mode(Client* user, std::vector<std::string> credentials);
         void                   _handle_user_mode(Client* user, std::vector<std::string> credentials);
         void                   _handle_invite(Client* user, std::vector<std::string> credentials);
+        void                   _handle_kick(Client* user, std::vector<std::string> credentials);
+        void                   _handle_cap(Client* user, std::vector<std::string> credentials);
 
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);

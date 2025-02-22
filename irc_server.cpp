@@ -171,6 +171,8 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
         _handle_invite(&_clientsBySocket[clientSocket], commandArgs);
     } else if (commandName == "KICK") {
         _handle_kick(&_clientsBySocket[clientSocket], commandArgs);
+    } else if (commandName == "CAP") {
+        _handle_cap(&_clientsBySocket[clientSocket], commandArgs);
     } 
 }
      
@@ -462,6 +464,25 @@ void Server::_handle_kick(Client* user, const std::vector<std::string>& credenti
     _distribute_msg_to_channel_members(user, channel, kickMessage, true);
     channel->removeMember(targetClient);
     targetClient->exitChannel(channelName); // exit the channel by ali
+}
+
+// Handle CAP command
+void Server::_handle_cap(Client* user, const std::vector<std::string>& credentials) {
+    if (credentials.empty()) {
+        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+        return;
+    }
+
+    std::string subcommand = credentials[0];
+    if (subcommand == "LS") {
+        send(user->getSocket(), "CAP * LS :multi-prefix sasl\r\n", 30, 0);
+    } else if (subcommand == "REQ") {
+        send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
+    } else if (subcommand == "END") {
+        send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
+    } else {
+        send(user->getSocket(), "ERROR : Invalid subcommand\r\n", 30, 0);
+    }
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
