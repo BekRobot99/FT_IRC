@@ -106,3 +106,13 @@ void Client::enterChannel(const std::string& channelName, Channel* targetChannel
     targetChannel->addMember(this);
 }
 
+void Client::exitChannel(const std::string& channelName) {
+    std::map<std::string, Channel*>::iterator it = _joinedChannels.find(channelName);
+    if (it != _joinedChannels.end()) {
+        it->second->removeMember(this);
+        _joinedChannels.erase(it);
+        if (_activeChannel == it->second) {
+            _activeChannel = nullptr;
+        }
+    }
+}

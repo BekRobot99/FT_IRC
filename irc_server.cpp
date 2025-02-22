@@ -458,6 +458,10 @@ void Server::_handle_kick(Client* user, const std::vector<std::string>& credenti
         return;
     }
 
+    std::string kickMessage = ":" + user->_obtainNickname() + " KICK " + channelName + " " + nickname + " KICK " + channelName + " " + nickname + " :" + (credentials.size() > 2 ? credentials[2] : "kicked") + "\r\n";
+    _distribute_msg_to_channel_members(user, channel, kickMessage, true);
+    channel->removeMember(targetClient);
+    targetClient->exitChannel(channelName); // exit the channel by ali
 }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {

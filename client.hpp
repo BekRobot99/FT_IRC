@@ -50,26 +50,16 @@ public:
     std::map<std::string, Channel*> getSubscribedChannels() const;        // Get the channels the client has joined
 
     void                            enterChannel(const std::string& channelName, Channel* targetChannel);        // Enter a channel
-
+    void                            exitChannel(const std::string& channelName);        // Exit a channel
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
-    bool                            _isInvisible;         // Flag for invisible status
-    bool                            _isOperator;          // Flag for operator status
-
 
 public:
         Client(int fd) : _fd(fd), _is_stopped(false) {}
 
         void set_stopped(bool value) { _is_stopped = value; }
         bool is_stopped() const { return _is_stopped; }
-         // Getters
-        bool                            isInvisible() const { return _isInvisible; }
-        bool                            isOperator() const { return _isOperator; }
-    
-        // Setters  
-        void                            setInvisible(bool value) { _isInvisible = value; }
-        void                            setOperator(bool value) { _isOperator = value; }
 
         void append_to_buffer(const std::string& data) {
             _buffer += data;
