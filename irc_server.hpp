@@ -72,6 +72,8 @@ class Server
         bool					_isUsernameTaken(const std::string& username);
         void                   _distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender);
         // void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message); unused after updating nick command
+        void                    void eliminateDuplicateEntries(std::vector<std::string>& vec);
+        
 };
 
 #endif
