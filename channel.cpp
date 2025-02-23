@@ -31,7 +31,12 @@ void Channel::addMember(Client* user) {
 
 // Check if a client is in the channel
 bool Channel::hasMember(Client* user) const {
-    return std::find(_members.begin(), _members.end(), user) != _members.end();
+    for (std::vector<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
+        if (*it == user) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // get topic of the channel
@@ -74,4 +79,12 @@ void Channel::removeMember(Client* user) {
     if (it != _members.end()) {
         _members.erase(it);
     }
+}
+
+// Check if the channel is at capacity
+bool Channel::isAtCapacity() const {
+    if (_maxMembers == 0) {
+        return false;
+    }
+    return _members.size() >= _maxMembers;
 }

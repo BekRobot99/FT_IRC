@@ -39,5 +39,6 @@ public:
     void                            addInvitedUser(Client* user); // Add an invited user
     bool                            isUserInvited(const std::string& nickname) const; // Check if a nickname is invited
     void                            removeMember(Client* user); // Remove a client from the channel
+    bool                            isAtCapacity() const; // Check if the channel is at capacity
 };
 #endif
