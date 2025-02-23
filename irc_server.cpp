@@ -199,53 +199,55 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle NICK command
-void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR : No nickname given\r\n", 26, 0);
-        return;
-    }
+//old version
+// void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR : No nickname given\r\n", 26, 0);
+//         return;
+//     }
 
-    std::string nickname = credentials[0];
-    if (!_checkNicknameValid(nickname)) {
-        send(user->getSocket(), "ERROR : Erroneous nickname\r\n", 27, 0);
-        return;
-    }
+//     std::string nickname = credentials[0];
+//     if (!_checkNicknameValid(nickname)) {
+//         send(user->getSocket(), "ERROR : Erroneous nickname\r\n", 27, 0);
+//         return;
+//     }
 
-    if (_isUsernameTaken(nickname)) {
-        send(user->getSocket(), "ERROR : Nickname is already in use\r\n", 35, 0);
-        return;
-    }
+//     if (_isUsernameTaken(nickname)) {
+//         send(user->getSocket(), "ERROR : Nickname is already in use\r\n", 35, 0);
+//         return;
+//     }
 
-    user->updateUsername(nickname);
-    _registeredUsernames.push_back(nickname);
+//     user->updateUsername(nickname);
+//     _registeredUsernames.push_back(nickname);
 
-    if (user->is_registered()) {
-        send(user->getSocket(), "ERROR : Broadcast nickname change to all channels the client is in\r\n", 67, 0);
-        _notifyAllSubscribedChannels(user, "NICK " + nickname);
-    }
-}
+//     if (user->is_registered()) {
+//         send(user->getSocket(), "ERROR : Broadcast nickname change to all channels the client is in\r\n", 67, 0);
+//         _notifyAllSubscribedChannels(user, "NICK " + nickname);
+//     }
+// }
 
 // Handle USER command
-void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
-    if (credentials.size() < 4) {
-        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.size() < 4) {
+//         send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+//         return;
+//     }
 
-    if (user->is_registered()) {
-        send(user->getSocket(), "ERROR : You may not reregister\r\n", 30, 0);
-        return;
-    }
+//     if (user->is_registered()) {
+//         send(user->getSocket(), "ERROR : You may not reregister\r\n", 30, 0);
+//         return;
+//     }
 
-    user->storeUsername(credentials[0]); // set the username of the client by ali   
-    user->storeRealname(credentials[3]); // set the realname of the client by ali
+//     user->storeUsername(credentials[0]); // set the username of the client by ali   
+//     user->storeRealname(credentials[3]); // set the realname of the client by ali
 
-    if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty()) // check if the nickname and username are not empty by ali
-    {
-        user->updateRegistrationStatus(true); // set the registration status of the client by ali
-        _sendWelcomeMessage(user);
-    }
-}
+//     if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty()) // check if the nickname and username are not empty by ali
+//     {
+//         user->updateRegistrationStatus(true); // set the registration status of the client by ali
+//         _sendWelcomeMessage(user);
+//     }
+// }
 
 // Handle PING command
 void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
