@@ -46,6 +46,7 @@ class Server
         void					_deleteClient(int clientFd);
         void                    _process_command(int clientSocket, const std::string& rawCommand);
         std::vector<std::string> _tokenizeString(const std::string& input, char separator);
+        void                     _notifyAllSubscribedChannels(const std::string& message);
 
         // Commands Handlers 
         void					_handle_pass(Client* user, std::vector<std::string> credentials);
@@ -70,7 +71,7 @@ class Server
         bool					_checkNicknameValid(const std::string& nickname);
         bool					_isUsernameTaken(const std::string& username);
         void                   _distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender);
-        void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message);
+        // void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message); unused after updating nick command
 };
 
 #endif

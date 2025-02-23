@@ -179,23 +179,24 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 }
      
 // Handle PASS command
-void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR :Not enough parameters (PASS)\r\n", 36, 0);
-        return;
-    }
+//old version
+// void Server::_handle_pass(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR :Not enough parameters (PASS)\r\n", 36, 0);
+//         return;
+//     }
 
-    if (user->is_registered()) {
-        send(user->getSocket(), "ERROR :You may not reregister\r\n", 30, 0);
-        return;
-    }
+//     if (user->is_registered()) {
+//         send(user->getSocket(), "ERROR :You may not reregister\r\n", 30, 0);
+//         return;
+//     }
 
-    if (credentials[0] != _serverPassword) {
-        send(user->getSocket(), "ERROR :Password incorrect\r\n", 26, 0);
-        return;
-    }
-    user->storePassword(credentials[0]);
-}
+//     if (credentials[0] != _serverPassword) {
+//         send(user->getSocket(), "ERROR :Password incorrect\r\n", 26, 0);
+//         return;
+//     }
+//     user->storePassword(credentials[0]);
+// }
 
 // Handle NICK command
 void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
@@ -556,13 +557,14 @@ bool Server::_isUsernameTaken(const std::string& username) {
 }
 
 // Broadcast a message to all channels a client has joined
-void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& message) {
-    std::vector<std::string> subscribedChannels = sender->getSubscribedChannels(); // get the channels the client has joined must done in the client class by ali
-    for (std::vector<std::string>::iterator it = subscribedChannels.begin(); it != subscribedChannels.end(); ++it) {
-        Channel* currentChannel = &_channelsByName[*it];
-        _distributeMessageToChannelMembers(sender, currentChannel, message, false);
-    }
-}
+// previous version
+// void Server::_notifyAllSubscribedChannels(Client* sender, const std::string& message) {
+//     std::vector<std::string> subscribedChannels = sender->getSubscribedChannels(); // get the channels the client has joined must done in the client class by ali
+//     for (std::vector<std::string>::iterator it = subscribedChannels.begin(); it != subscribedChannels.end(); ++it) {
+//         Channel* currentChannel = &_channelsByName[*it];
+//         _distributeMessageToChannelMembers(sender, currentChannel, message, false);
+//     }
+// }
 
 // Send a message to all members of a channel
 void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender) {
@@ -571,6 +573,16 @@ void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel
         if (includeSender || (*it)->getSocket() != sender->getSocket()) {
             send((*it)->getSocket(), msg.c_str(), msg.size(), 0);
         }
+    }
+}
+
+// send a message to all members of a channel
+// new version
+_notifyAllSubscribedChannels(const std::string& message)
+{
+    for (std::map<int, Client>::iterator it = _clientsBySocket.begin(); it != _clientsBySocket.end(); ++it) {
+        Client* user = &it->second;
+        client->queueResponseMessage(message);
     }
 }
 
