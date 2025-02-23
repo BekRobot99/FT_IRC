@@ -286,51 +286,53 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle PRIVMSG command
-void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials) {
-    if (credentials.size() < 2) {
-        send(user->getSocket(), "ERROR : No recipient or message specified\r\n", 43, 0);
-        return;
-    }
+// old version
+// void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.size() < 2) {
+//         send(user->getSocket(), "ERROR : No recipient or message specified\r\n", 43, 0);
+//         return;
+//     }
 
-    std::string target = credentials[0];
-    std::string message = credentials[1];
+//     std::string target = credentials[0];
+//     std::string message = credentials[1];
 
-    if (target[0] == '#') {
-        // Send message to a channel
-        if (_channelsByName.find(target) == _channelsByName.end()) {
-            send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
-            return;
-        }
+//     if (target[0] == '#') {
+//         // Send message to a channel
+//         if (_channelsByName.find(target) == _channelsByName.end()) {
+//             send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+//             return;
+//         }
 
-        Channel* channel = &_channelsByName[target];
-        _distributeMessageToChannelMembers(user, channel, message, false);
-    }
+//         Channel* channel = &_channelsByName[target];
+//         _distributeMessageToChannelMembers(user, channel, message, false);
+//     }
 
-    else {
-        // Send message to a user
-        Client* targetClient = _locateClientByNickname(target);
-        if (!targetClient) {
-            // send error message
-            send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
-            return;
-        }
-        std::string privmsg = ":" + user->_obtainNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
-        send(targetClient->getSocket(), privmsg.c_str(), privmsg.size(), 0);
-    }
+//     else {
+//         // Send message to a user
+//         Client* targetClient = _locateClientByNickname(target);
+//         if (!targetClient) {
+//             // send error message
+//             send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
+//             return;
+//         }
+//         std::string privmsg = ":" + user->_obtainNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+//         send(targetClient->getSocket(), privmsg.c_str(), privmsg.size(), 0);
+//     }
 
-}
+// }
 
 // Handle QUIT command
-void Server::_handle_quit(Client* user, std::vector<std::string> credentials) {
-    std::string exitMessage = ":" + user->_obtainNickname() + " QUIT :";
-    if (!credentials.empty()) {
-        exitMessage += credentials[0];
-    }
-    else {
-        exitMessage += "Client disconnected";
-    }
-    _disconnectClient(user, exitMessage);
-}
+// old version
+// void Server::_handle_quit(Client* user, std::vector<std::string> credentials) {
+//     std::string exitMessage = ":" + user->_obtainNickname() + " QUIT :";
+//     if (!credentials.empty()) {
+//         exitMessage += credentials[0];
+//     }
+//     else {
+//         exitMessage += "Client disconnected";
+//     }
+//     _disconnectClient(user, exitMessage);
+// }
 
 // Handle WHO command
 void Server::_handle_who(Client* user, const std::vector<std::string>& credentials) {
