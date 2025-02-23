@@ -98,3 +98,7 @@ bool Channel::isBlocked(const std::string& nickname) const {
 bool Channel::hasRestrictedAccess() const {
     return _restrictedAccess;
 }
+
+std::string Channel::obtain_Password() const {
+    return _accessKey;
+}

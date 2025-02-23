@@ -55,4 +55,11 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
         user->queueResponseMessage("473 * " + channelName + " :Cannot join channel (+i)\r\n");
         return;
     }
+
+    // Check if the channel has a password and the provided key is incorrect
+    if (channel->obtain_Password() != "" && key != "x" && key != channel->obtain_Password())
+    {
+        user->queueResponseMessage("475 * " + channelName + " :Cannot join channel (+k)\r\n");
+        return;
+    }
 }
