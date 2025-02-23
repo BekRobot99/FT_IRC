@@ -43,5 +43,6 @@ public:
     bool                            isBlocked(const std::string& nickname) const; // Check if a nickname is blocked
     bool                            hasRestrictedAccess() const; // Check if the channel has restricted access
     std::string                     obtain_Password() const; // Get the channel password
+    std::string                     getMemberList(); // Get the channel topic
 };
 #endif

@@ -62,4 +62,15 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
         user->queueResponseMessage("475 * " + channelName + " :Cannot join channel (+k)\r\n");
         return;
     }
+
+    // Add the client to the channel
+    channel->addMember(user);
+    user->enterChannel(channelName);
+
+    // Send the JOIN message to all channel members
+    std::string joinMessage = ":" + user->_obtainNickname() + "!~" + user->_obtainUsername() + " JOIN " + channelName + "\r\n";
+    _distributeMessageToChannelMembers(user, channel, joinMessage, false);
+
+    // Send the list of users in the channel to the client
+    std::string namesList = channel->getMemberList();
 }

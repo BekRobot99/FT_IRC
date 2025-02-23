@@ -102,3 +102,19 @@ bool Channel::hasRestrictedAccess() const {
 std::string Channel::obtain_Password() const {
     return _accessKey;
 }
+
+std::string Channel::getMemberList() {
+    std::string namesList;
+    for (size_t i = 0; i < _members.size(); ++i) {
+        Client* client = _members[i];
+        std::string prefix = "";
+        if (isModerator(client->_obtainNickname())) {
+            prefix = "@";
+        }
+        namesList += prefix + client->_obtainNickname();
+        if (i < _members.size() - 1) {
+            namesList += " ";
+        }
+    }
+    return namesList;
+}
