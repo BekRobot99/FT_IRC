@@ -41,5 +41,6 @@ public:
     void                            removeMember(Client* user); // Remove a client from the channel
     bool                            isAtCapacity() const; // Check if the channel is at capacity
     bool                            isBlocked(const std::string& nickname) const; // Check if a nickname is blocked
+    bool                            hasRestrictedAccess() const; // Check if the channel has restricted access
 };
 #endif

@@ -70,7 +70,8 @@ void Channel::addInvitedUser(Client* user) {
 
 // Check if a nickname is invited
 bool Channel::isUserInvited(const std::string& nickname) const {
-    return std::find(_guestList.begin(), _guestList.end(), nickname) != _guestList.end();
+    std::vector<std::string>::const_iterator it = std::find(_guestList.begin(), _guestList.end(), nickname);
+    return it != _guestList.end();
 }
 
 // Remove a client from the channel
@@ -92,4 +93,8 @@ bool Channel::isAtCapacity() const {
 bool Channel::isBlocked(const std::string& nickname) const {
     std::vector<std::string>::const_iterator it = std::find(_blockedUsers.begin(), _blockedUsers.end(), nickname);
     return it != _blockedUsers.end();
+}
+
+bool Channel::hasRestrictedAccess() const {
+    return _restrictedAccess;
 }
