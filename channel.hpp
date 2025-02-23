@@ -40,5 +40,6 @@ public:
     bool                            isUserInvited(const std::string& nickname) const; // Check if a nickname is invited
     void                            removeMember(Client* user); // Remove a client from the channel
     bool                            isAtCapacity() const; // Check if the channel is at capacity
+    bool                            isBlocked(const std::string& nickname) const; // Check if a nickname is blocked
 };
 #endif

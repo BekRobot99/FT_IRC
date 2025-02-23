@@ -88,3 +88,8 @@ bool Channel::isAtCapacity() const {
     }
     return _members.size() >= _maxMembers;
 }
+
+bool Channel::isBlocked(const std::string& nickname) const {
+    std::vector<std::string>::const_iterator it = std::find(_blockedUsers.begin(), _blockedUsers.end(), nickname);
+    return it != _blockedUsers.end();
+}

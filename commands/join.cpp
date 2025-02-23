@@ -41,4 +41,12 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
         user->queueResponseMessage("471 * " + channelName + " :Cannot join channel (+l)\r\n");
         return;
     }
+
+    // Check if the client is banned from the channel
+    if (channel->isBlocked(user->getNickname()))
+    {
+        user->queueResponseMessage("474 * " + channelName + " :Cannot join channel (+b)\r\n");
+        return;
+    }
+
 }
