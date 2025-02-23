@@ -68,6 +68,10 @@ std::string Client::_obtainRealname() const {
     return _clientRealname;
 }
 
+std::string Client::_obtainRegestrationStatus() const {
+    return _registrationStatus;
+}
+
 std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
     return _joinedChannels;
 }
@@ -76,7 +80,7 @@ int Client::getSocket() const { // Get the client's file descriptor
     return _fd;
 }
 
-bool Client::is_registered() const {
+bool Client::is_registered() const { // Get the client's registration status
     return _registrationStatus == STATUS_REGISTERED;
 }
 
@@ -115,4 +119,15 @@ void Client::exitChannel(const std::string& channelName) {
             _activeChannel = nullptr;
         }
     }
+}
+
+// Queue a response message
+void Client::queueResponseMessage(std::string message) {
+    std::cout << "out - " << _clientNickname << ": " << message;
+    _responseBuffer += message;
+}
+
+
+ClientStatus Client::getRegistrationStatus() const {
+    return _registrationStatus;
 }

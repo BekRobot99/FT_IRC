@@ -1,6 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <vector>
+#include <map>
 #include <iostream>
 #include <cstring>
 #include <unistd.h>

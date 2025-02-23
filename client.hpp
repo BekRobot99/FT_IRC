@@ -27,6 +27,7 @@ private:
     ClientStatus                    _registrationStatus;               // Current registration status
     std::string                     _hostname;                          // Client's hostname
     std::string                     _servername;                        // Server name the client is connected 
+    
 public:
     Client();                                                           // Default constructor
     Client(int fd);                                                     // Parameterized constructor
@@ -40,6 +41,7 @@ public:
     std::string                     _obtainUsername() const;               // Get the client's username
     std::string                     _obtainHostname() const;               // Get the client's hostname
     std::string                     _obtainRealname() const;               // Get the client's real name
+    std::string                     _obtainRegestrationStatus() const;     // Get the client's registration status
     std::map<std::string, Channel*> get_connected_channels() const;        // Get the channels the client has joined
     int                             getSocket() const;                     // Get the client's file descriptor
 
@@ -51,6 +53,10 @@ public:
 
     void                            enterChannel(const std::string& channelName, Channel* targetChannel);        // Enter a channel
     void                            exitChannel(const std::string& channelName);        // Exit a channel
+    void                            queueResponseMessage(std::string message);        // Queue a response message
+
+    ClientStatus                    getRegistrationStatus() const;                     // Get the client's registration status
+    
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
