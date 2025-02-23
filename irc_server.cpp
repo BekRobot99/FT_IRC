@@ -263,26 +263,27 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle JOIN command
-void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
+//         return;
+//     }
 
-    std::string channelName = credentials[0];
-    if (_channelsByName.find(channelName) == _channelsByName.end()) {
-        // Create a new channel
-        Channel newChannel(channelName);
-        _channelsByName[channelName] = newChannel;
-    }
+//     std::string channelName = credentials[0];
+//     if (_channelsByName.find(channelName) == _channelsByName.end()) {
+//         // Create a new channel
+//         Channel newChannel(channelName);
+//         _channelsByName[channelName] = newChannel;
+//     }
 
-    Channel* channel = &_channelsByName[channelName];
-    channel->addMember(user);
-    user->enterChannel(channelName);
+//     Channel* channel = &_channelsByName[channelName];
+//     channel->addMember(user);
+//     user->enterChannel(channelName);
 
-    std::string joinMessage = ":" + user->_obtainNickname() + " JOIN " + channelName + "\r\n";
-    _distributeMessageToChannelMembers(user, channel, joinMessage, true);
-}
+//     std::string joinMessage = ":" + user->_obtainNickname() + " JOIN " + channelName + "\r\n";
+//     _distributeMessageToChannelMembers(user, channel, joinMessage, true);
+// }
 
 // Handle PRIVMSG command
 void Server::_handle_privmsg(Client* user, std::vector<std::string> credentials) {

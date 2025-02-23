@@ -73,4 +73,11 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
 
     // Send the list of users in the channel to the client
     std::string namesList = channel->getMemberList();
+    if (channel->getDiscussionTopic() == "")
+        user->queueResponseMessage("331 " + user->_obtainNickname() + " " + channelName + " :No topic is set\r\n");
+    else
+        user->queueResponseMessage("332 " + user->_obtainNickname() + " " + channelName + " :" + channel->getDiscussionTopic() + "\r\n");
+        
+    user->queueResponseMessage("353 " + user->_obtainNickname() + " = " + channelName + " :" + namesList + " \r\n");
+    user->queueResponseMessage("366 " + user->_obtainNickname() + " " + channelName + " :End of /NAMES list\r\n");
 }

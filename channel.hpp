@@ -44,5 +44,6 @@ public:
     bool                            hasRestrictedAccess() const; // Check if the channel has restricted access
     std::string                     obtain_Password() const; // Get the channel password
     std::string                     getMemberList(); // Get the channel topic
+    std::string                     getDiscussionTopic() const; // Get the channel topic
 };
 #endif

@@ -118,3 +118,7 @@ std::string Channel::getMemberList() {
     }
     return namesList;
 }
+
+std::string Channel::getDiscussionTopic() const {
+    return _discussionTopic;
+}
