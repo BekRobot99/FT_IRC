@@ -250,16 +250,17 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle PING command
-void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR :No origin specified (PING)\r\n", 36, 0);
-        return;
-    }
+// old version
+// void Server::_handle_ping(Client* user, std::vector<std::string> credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR :No origin specified (PING)\r\n", 36, 0);
+//         return;
+//     }
 
-    std::string origin = credentials[0];
-    std::string pongMessage = ":" + _serverName + " PONG "  + origin + "\r\n";
-    send(user->getSocket(), pongMessage.c_str(), pongMessage.size(), 0);
-}
+//     std::string origin = credentials[0];
+//     std::string pongMessage = ":" + _serverName + " PONG "  + origin + "\r\n";
+//     send(user->getSocket(), pongMessage.c_str(), pongMessage.size(), 0);
+// }
 
 // Handle JOIN command
 void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
