@@ -68,9 +68,9 @@ std::string Client::_obtainRealname() const {
     return _clientRealname;
 }
 
-std::string Client::_obtainRegestrationStatus() const {
-    return _registrationStatus;
-}
+// std::string Client::_obtainRegestrationStatus() const {
+//     return _registrationStatus; // this return type found it wrong 
+// }
 
 std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
     return _joinedChannels;
