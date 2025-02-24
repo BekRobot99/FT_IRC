@@ -122,3 +122,7 @@ std::string Channel::getMemberList() {
 std::string Channel::getDiscussionTopic() const {
     return _discussionTopic;
 }
+
+bool Channel::isTopicRestricted() const {
+    return _topicLock;
+}

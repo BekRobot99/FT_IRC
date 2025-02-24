@@ -45,5 +45,6 @@ public:
     std::string                     obtain_Password() const; // Get the channel password
     std::string                     getMemberList(); // Get the channel topic
     std::string                     getDiscussionTopic() const; // Get the channel topic
+    bool                            isTopicRestricted() const; // Check if the topic is restricted
 };
 #endif
