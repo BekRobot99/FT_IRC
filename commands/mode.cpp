@@ -55,6 +55,9 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
             case 'i':  // Invite-only mode
                 channel.configureInviteOnly(setMode);
                 break;
+
+            case 't':  // Topic restriction mode
+                channel.updateTopicRestriction(setMode);
+                break;
     }
 }
-

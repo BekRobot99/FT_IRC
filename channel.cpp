@@ -130,3 +130,7 @@ bool Channel::isTopicRestricted() const {
 void Channel::configureInviteOnly(bool isInviteOnly) {
     _restrictedAccess = isInviteOnly;
 }
+
+void Channel::updateTopicRestriction (bool isTopicRestricted) {
+    _topicLock = isTopicRestricted;
+}
