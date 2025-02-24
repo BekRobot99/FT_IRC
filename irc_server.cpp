@@ -363,37 +363,38 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle TOPIC command
-void Server::_handle_topic(Client* user, const std::vector<std::string>& credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_topic(Client* user, const std::vector<std::string>& credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR : No channel specified\r\n", 30, 0);
+//         return;
+//     }
 
-    std::string channelName = credentials[0];
-    if (_channelsByName.find(channelName) == _channelsByName.end()) {
-        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
-        return;
-    }
+//     std::string channelName = credentials[0];
+//     if (_channelsByName.find(channelName) == _channelsByName.end()) {
+//         send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+//         return;
+//     }
 
-    Channel* channel = &_channelsByName[channelName];
-    if (credentials.size() == 1) {
-        std::string topic = channel->obtainTopic();
-        std::string topicMessage = ":" + _serverName + " 332 " + user->_obtainNickname() + " " + channelName + " :" + topic + "\r\n";
-        send(user->getSocket(), topicMessage.c_str(), topicMessage.size(), 0);
-    }
-    else {
-        if (!channel->isModerator(user)) {
-            send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
-            return;
-        }
+//     Channel* channel = &_channelsByName[channelName];
+//     if (credentials.size() == 1) {
+//         std::string topic = channel->obtainTopic();
+//         std::string topicMessage = ":" + _serverName + " 332 " + user->_obtainNickname() + " " + channelName + " :" + topic + "\r\n";
+//         send(user->getSocket(), topicMessage.c_str(), topicMessage.size(), 0);
+//     }
+//     else {
+//         if (!channel->isModerator(user)) {
+//             send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+//             return;
+//         }
 
-        std::string newTopic = credentials[1];
-        channel->updateDiscussionTopic(newTopic);
+//         std::string newTopic = credentials[1];
+//         channel->updateDiscussionTopic(newTopic);
 
-        std::string topicMessage = ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + newTopic + "\r\n";
-        _distributeMessageToChannelMembers(user, channel, topicMessage, true);
-    }
-}
+//         std::string topicMessage = ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + newTopic + "\r\n";
+//         _distributeMessageToChannelMembers(user, channel, topicMessage, true);
+//     }
+// }
 
 // Handle MODE command
 void Server::_handle_mode(Client* user, const std::vector<std::string>& credentials) {
