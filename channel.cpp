@@ -61,6 +61,13 @@ void Channel::assignModerator(const std::string& username) {
     }
 }
 
+// remove a moderator
+void Channel::removeModerator(const std::string& nickname) {
+    std::vector<std::string>::iterator it = std::find(_moderators.begin(), _moderators.end(), nickname);
+    if (it != _moderators.end())
+        _moderators.erase(it);
+}
+
 // add invited user
 void Channel::addInvitedUser(Client* user) {
     if (!isUserInvited(user->_obtainNickname())) {

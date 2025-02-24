@@ -59,5 +59,35 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
             case 't':  // Topic restriction mode
                 channel.updateTopicRestriction(setMode);
                 break;
+
+            case 'k':  // Channel password mode
+                if (setMode && paramIdx < credentials.size()) {
+                    channel.storePassword(credentials[paramIdx++]);
+                } else {
+                    channel.storePassword("");
+                }
+                break;
+
+            case 'o':  // Operator mode
+                if (paramIdx < credentials.size()) {
+                    std::string targetNickname = credentials[paramIdx++];
+                    Client* targetClient = _locateClientByNickname(targetNickname);
+
+                    if (!targetClient || !channel.hasMember(targetNickname)) {
+                        user->queueResponseMessage("401 " + user->_obtainNickname() + " " + targetNickname + " :No such nick\r\n");
+                        return;
+                    }
+
+                    if (setMode) {
+                        channel.assignModerator(targetNickname);
+                    } else {
+                        channel.removeModerator(targetNickname);
+                    }
+                } else {
+                    user->queueResponseMessage("461 " + user->_obtainNickname() + " MODE :Not enough parameters\r\n");
+                    return;
+                }
+                break;
+        }
     }
 }
