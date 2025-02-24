@@ -46,5 +46,5 @@ public:
     std::string                     getMemberList(); // Get the channel topic
     std::string                     getDiscussionTopic() const; // Get the channel topic
     bool                            isTopicRestricted() const; // Check if the topic is restricted
-};
+    void                            configureInviteOnly(bool isInviteOnly); // Configure the channel to be invite-only
 #endif

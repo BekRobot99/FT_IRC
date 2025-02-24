@@ -654,51 +654,51 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
 }
 
 // Handle user mode
-void Server::_handle_user_mode(Client* user, const std::vector<std::string>& credentials) {
-    if (credentials.size() < 2) {
-        send(user->getSocket(), "ERROR : Not enough parameters (MODE)\r\n", 36, 0);
-        return;
-    }
+// void Server::_handle_user_mode(Client* user, const std::vector<std::string>& credentials) {
+//     if (credentials.size() < 2) {
+//         send(user->getSocket(), "ERROR : Not enough parameters (MODE)\r\n", 36, 0);
+//         return;
+//     }
 
-    std::string nickname = credentials[0];
-    std::string channelName = credentials[1];
+//     std::string nickname = credentials[0];
+//     std::string channelName = credentials[1];
 
-    // Check if the target nickname matches the client's nickname
-    if (nickname != user->_obtainNickname()) {
-        send(user->getSocket(), "ERROR :Cannot change modes for other users\r\n", 42, 0);
-        return;
-    }
+//     // Check if the target nickname matches the client's nickname
+//     if (nickname != user->_obtainNickname()) {
+//         send(user->getSocket(), "ERROR :Cannot change modes for other users\r\n", 42, 0);
+//         return;
+//     }
 
-    // Handle setting/unsetting modes
-    if (mode.size() < 2 || (mode[0] != '+' && mode[0] != '-')) {
-        send(user->getSocket(), "ERROR :Invalid mode format\r\n", 28, 0);
-        return;
-    }
+//     // Handle setting/unsetting modes
+//     if (mode.size() < 2 || (mode[0] != '+' && mode[0] != '-')) {
+//         send(user->getSocket(), "ERROR :Invalid mode format\r\n", 28, 0);
+//         return;
+//     }
 
-   char modeChar = mode[1]; // The mode character (e.g., 'i', 'o')
-   bool setMode = (mode[0] == '+'); // True if setting the mode, false if unsetting
+//    char modeChar = mode[1]; // The mode character (e.g., 'i', 'o')
+//    bool setMode = (mode[0] == '+'); // True if setting the mode, false if unsetting
 
-    switch (modeChar) {
-        case 'i': // Invisible mode
-            user->set_invisible(setMode);
-            send(user->getSocket(), (":" + _serverName + " MODE " + user->_obtainNickname() + " " + mode + "\r\n").c_str(), 0);
-            break;
+//     switch (modeChar) {
+//         case 'i': // Invisible mode
+//             user->set_invisible(setMode);
+//             send(user->getSocket(), (":" + _serverName + " MODE " + user->_obtainNickname() + " " + mode + "\r\n").c_str(), 0);
+//             break;
 
-        case 'o': // Operator mode
-            if (setMode) {
-                // Only the server can grant operator status
-                send(user->getSocket(), "ERROR :Cannot set operator mode\r\n", 32, 0);
-            } else {
-                user->set_operator(false);
-                send(user->getSocket(), (":" + _serverName + " MODE " + user->_obtainNickname() + " " + mode + "\r\n").c_str(), 0);
-            }
-            break;
+//         case 'o': // Operator mode
+//             if (setMode) {
+//                 // Only the server can grant operator status
+//                 send(user->getSocket(), "ERROR :Cannot set operator mode\r\n", 32, 0);
+//             } else {
+//                 user->set_operator(false);
+//                 send(user->getSocket(), (":" + _serverName + " MODE " + user->_obtainNickname() + " " + mode + "\r\n").c_str(), 0);
+//             }
+//             break;
 
-        default:
-            send(user->getSocket(), "ERROR :Unknown mode\r\n", 22, 0);
-            break;
-    }
-}
+//         default:
+//             send(user->getSocket(), "ERROR :Unknown mode\r\n", 22, 0);
+//             break;
+//     }
+// }
 
 void eliminateDuplicateEntries(std::vector<std::string>& vec) {
     for (size_t i = 0; i < vec.size(); ++i) {

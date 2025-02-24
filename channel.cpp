@@ -126,3 +126,7 @@ std::string Channel::getDiscussionTopic() const {
 bool Channel::isTopicRestricted() const {
     return _topicLock;
 }
+
+void Channel::configureInviteOnly(bool isInviteOnly) {
+    _restrictedAccess = isInviteOnly;
+}
