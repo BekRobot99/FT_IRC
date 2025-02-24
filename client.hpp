@@ -56,10 +56,12 @@ public:
     void                            queueResponseMessage(std::string message);        // Queue a response message
 
     ClientStatus                    getRegistrationStatus() const;                     // Get the client's registration status
-    
+
 private:
     std::string _buffer; // Buffer for stopped clients
     bool _is_stopped;    // Flag to indicate if the client is stopped
+    bool _is_invisible; // Flag to indicate if the client is invisible
+    bool _is_operator;  // Flag to indicate if the client is an operator
 
 public:
         Client(int fd) : _fd(fd), _is_stopped(false) {}
@@ -78,6 +80,7 @@ public:
         void clear_buffer() {
             _buffer.clear();
         }
-
+        void set_invisible(bool value) { _is_invisible = value; }
+        void set_operator(bool value) { _is_operator = value; }
 };
 #endif

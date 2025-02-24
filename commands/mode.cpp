@@ -108,4 +108,46 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
     }
 }
 
+void Server::_handle_user_mode(Client* user, const std::vector<std::string>& credentials) {
+    if (credentials.size() < 2) {
+        user->queueResponseMessage("461 " + user->_obtainNickname() + " MODE :Not enough parameters\r\n");
+        return;
+    }
 
+    std::string nickname = credentials[0];
+    std::string mode = credentials[1];
+
+    if (nickname != user->_obtainNickname()) {
+        user->queueResponseMessage("502 " + user->_obtainNickname() + " :Cannot change mode for other users\r\n");
+        return;
+    }
+
+    if (mode.size() < 2 || (mode[0] != '+' && mode[0] != '-')) {
+        user->queueResponseMessage("461 " + user->_obtainNickname() + " MODE :Invalid mode format\r\n");
+        return;
+    }
+
+    bool setMode = (mode[0] == '+');
+    char modeChar = mode[1];
+
+    switch (modeChar) {
+        case 'i':  // Invisible mode
+            user->set_invisible(setMode);
+            break;
+
+        case 'o':  // Operator mode
+            if (setMode) {
+                user->queueResponseMessage("502 " + user->_obtainNickname() + " :Cannot set operator mode\r\n");
+            } else {
+                user->set_operator(false);
+            }
+            break;
+
+        default:
+            user->queueResponseMessage("472 " + user->_obtainNickname() + " " + std::string(1, modeChar) + " :is unknown mode char to me\r\n");
+            break;
+    }
+
+    std::string modeChangeMsg = ":" + _serverName + " MODE " + user->_obtainNickname() + " " + mode + "\r\n";
+    user->queueResponseMessage(modeChangeMsg);
+}
