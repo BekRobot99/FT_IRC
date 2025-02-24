@@ -335,31 +335,32 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle WHO command
-void Server::_handle_who(Client* user, const std::vector<std::string>& credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR : No mask specified\r\n", 26, 0);
-        return;
-    }
+// old version
+// void Server::_handle_who(Client* user, const std::vector<std::string>& credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR : No mask specified\r\n", 26, 0);
+//         return;
+//     }
 
-    std::string mask = credentials[0];
-    if (mask[0] == '#') {
-        // List users in a channel
-        if (_channelsByName.find(mask) == _channelsByName.end()) {
-            send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
-            return;
-        }
+//     std::string mask = credentials[0];
+//     if (mask[0] == '#') {
+//         // List users in a channel
+//         if (_channelsByName.find(mask) == _channelsByName.end()) {
+//             send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+//             return;
+//         }
 
-        Channel* channel = &_channelsByName[mask];
-        std::vector<Client*> members = channel->getMembers();
-        for (std::vector<Client*>::iterator it = members.begin(); it != members.end(); ++it) {
-            std::string whoMessage = ":" + _serverName + " 352 " + user->_obtainNickname() + " " + mask + " " + (*it)->_obtainUsername() + " " + (*it)->_obtainHostname() + " " + _serverName + " " + (*it)->_obtainNickname() + " H :0 " + (*it)->_obtainRealname() + "\r\n";
-            send(user->getSocket(), whoMessage.c_str(), whoMessage.size(), 0);
-        }
-    }
-    else {
-        // List users matching a nickname mask (will be  implemented after by ramez)
-    }
-}
+//         Channel* channel = &_channelsByName[mask];
+//         std::vector<Client*> members = channel->getMembers();
+//         for (std::vector<Client*>::iterator it = members.begin(); it != members.end(); ++it) {
+//             std::string whoMessage = ":" + _serverName + " 352 " + user->_obtainNickname() + " " + mask + " " + (*it)->_obtainUsername() + " " + (*it)->_obtainHostname() + " " + _serverName + " " + (*it)->_obtainNickname() + " H :0 " + (*it)->_obtainRealname() + "\r\n";
+//             send(user->getSocket(), whoMessage.c_str(), whoMessage.size(), 0);
+//         }
+//     }
+//     else {
+//         // List users matching a nickname mask (will be  implemented after by ramez)
+//     }
+// }
 
 // Handle TOPIC command
 void Server::_handle_topic(Client* user, const std::vector<std::string>& credentials) {
