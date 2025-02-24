@@ -447,37 +447,38 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle KICK command
-void Server::_handle_kick(Client* user, const std::vector<std::string>& credentials) {
-    if (credentials.size() < 2) {
-        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_kick(Client* user, const std::vector<std::string>& credentials) {
+//     if (credentials.size() < 2) {
+//         send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+//         return;
+//     }
 
-    std::string channelName = credentials[0];
-    std::string nickname = credentials[1];
+//     std::string channelName = credentials[0];
+//     std::string nickname = credentials[1];
 
-    if (_channelsByName.find(channelName) == _channelsByName.end()) {
-        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
-        return;
-    }
+//     if (_channelsByName.find(channelName) == _channelsByName.end()) {
+//         send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+//         return;
+//     }
 
-    Channel* channel = &_channelsByName[channelName];
-    if (!channel->isModerator(user)) {
-        send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
-        return;
-    }
+//     Channel* channel = &_channelsByName[channelName];
+//     if (!channel->isModerator(user)) {
+//         send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+//         return;
+//     }
 
-    Client* targetClient = _locateClientByNickname(nickname);
-    if (!targetClient) {
-        send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
-        return;
-    }
+//     Client* targetClient = _locateClientByNickname(nickname);
+//     if (!targetClient) {
+//         send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
+//         return;
+//     }
 
-    std::string kickMessage = ":" + user->_obtainNickname() + " KICK " + channelName + " " + nickname + " KICK " + channelName + " " + nickname + " :" + (credentials.size() > 2 ? credentials[2] : "kicked") + "\r\n";
-    _distribute_msg_to_channel_members(user, channel, kickMessage, true);
-    channel->removeMember(targetClient);
-    targetClient->exitChannel(channelName); // exit the channel by ali
-}
+//     std::string kickMessage = ":" + user->_obtainNickname() + " KICK " + channelName + " " + nickname + " KICK " + channelName + " " + nickname + " :" + (credentials.size() > 2 ? credentials[2] : "kicked") + "\r\n";
+//     _distribute_msg_to_channel_members(user, channel, kickMessage, true);
+//     channel->removeMember(targetClient);
+//     targetClient->exitChannel(channelName); // exit the channel by ali
+// }
 
 // Handle CAP command
 void Server::_handle_cap(Client* user, const std::vector<std::string>& credentials) {
