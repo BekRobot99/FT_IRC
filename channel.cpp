@@ -141,3 +141,7 @@ void Channel::configureInviteOnly(bool isInviteOnly) {
 void Channel::updateTopicRestriction (bool isTopicRestricted) {
     _topicLock = isTopicRestricted;
 }
+
+void Channel::setMemberLimit(unsigned short memberLmit) {
+    _maxMembers = memberLmit;
+}

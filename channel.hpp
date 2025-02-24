@@ -49,5 +49,6 @@ public:
     void                            configureInviteOnly(bool isInviteOnly); // Configure the channel to be invite-only
     void                            updateTopicRestriction (bool isTopicRestricted); // Update the topic restriction
     void                            removeModerator(const std::string& nickname); // Remove a moderator
+    void                             setMemberLimit(unsigned short memberLmit); // Set the member limit
 }
 #endif

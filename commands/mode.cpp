@@ -88,6 +88,20 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
                     return;
                 }
                 break;
+
+            case 'l':  // User limit mode
+                if (setMode && paramIdx < credentials.size()) {
+                    channel.setMemberLimit(atoi(credentials[paramIdx++].c_str()));
+                } else {
+                    channel.setMemberLimit(0);
+                }
+                break;
+
+            default:
+                user->queueResponseMessage("472 " + user->_obtainNickname() + " " + std::string(1, modeChar) + " :is unknown mode char to me\r\n");
+                break;
         }
     }
 }
+
+
