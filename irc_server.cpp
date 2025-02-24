@@ -414,36 +414,37 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle INVITE command
-void Server::_handle_invite(Client* user, const std::vector<std::string>& credentials) {
-   if (credentials.size() < 2) {
-        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_invite(Client* user, const std::vector<std::string>& credentials) {
+//    if (credentials.size() < 2) {
+//         send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+//         return;
+//     }
 
-    std::string nickname = credentials[0];
-    std::string channelName = credentials[1];
+//     std::string nickname = credentials[0];
+//     std::string channelName = credentials[1];
 
-    Client* targetClient = _locateClientByNickname(nickname);
-    if (!targetClient) {
-        send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
-        return;
-    }
+//     Client* targetClient = _locateClientByNickname(nickname);
+//     if (!targetClient) {
+//         send(user->getSocket(), "ERROR : No such nick\r\n", 20, 0);
+//         return;
+//     }
 
-    if (_channelsByName.find(channelName) == _channelsByName.end()) {
-        send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
-        return;
-    }
+//     if (_channelsByName.find(channelName) == _channelsByName.end()) {
+//         send(user->getSocket(), "ERROR : No such channel\r\n", 24, 0);
+//         return;
+//     }
 
-    Channel* channel = &_channelsByName[channelName];
-    if (!channel->isModerator(user)) {
-        send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
-        return;
-    }
+//     Channel* channel = &_channelsByName[channelName];
+//     if (!channel->isModerator(user)) {
+//         send(user->getSocket(), "ERROR : You're not a channel operator\r\n", 38, 0);
+//         return;
+//     }
 
-    channel->addInvitedUser(targetClient);
-    std::string inviteMessage = ":" + user->_obtainNickname() + " INVITE " + nickname + " " + channelName + "\r\n";
-    send(targetClient->getSocket(), inviteMessage.c_str(), inviteMessage.size(), 0);
-}
+//     channel->addInvitedUser(targetClient);
+//     std::string inviteMessage = ":" + user->_obtainNickname() + " INVITE " + nickname + " " + channelName + "\r\n";
+//     send(targetClient->getSocket(), inviteMessage.c_str(), inviteMessage.size(), 0);
+// }
 
 // Handle KICK command
 void Server::_handle_kick(Client* user, const std::vector<std::string>& credentials) {
