@@ -67,7 +67,6 @@
 
         // Buffer Management
         void                            queueResponseMessage(std::string message); // Queue a response message
-        std::string                     get_buffer() const;                 // Get the buffer contents
         void                            clear_buffer();                     // Clear the buffer
 
         // Status Management
@@ -76,6 +75,7 @@
         void                            set_invisible(bool value) { _is_invisible = value; }
         void                            set_operator(bool value) { _is_operator = value; }
         void                            append_to_buffer(const std::string& data) { _buffer += data;}
+        std::string                     get_buffer() const { return _buffer;}
     };
 
     #endif
