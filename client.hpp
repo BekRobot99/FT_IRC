@@ -72,9 +72,10 @@
 
         // Status Management
         void                            set_stopped(bool value);            // Set the stopped flag
-        bool                            is_stopped() const;                 // Check if the client is stopped
-        void                            set_invisible(bool value);          // Set the invisible flag
-        void                            set_operator(bool value);           // Set the operator flag
+        bool                           is_stopped() const { return _is_stopped; }
+        void                            set_invisible(bool value) { _is_invisible = value; }
+        void                            set_operator(bool value) { _is_operator = value; }
+        void                            append_to_buffer(const std::string& data) { _buffer += data;}
     };
 
     #endif
