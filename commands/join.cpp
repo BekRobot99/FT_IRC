@@ -65,7 +65,7 @@ void Server::_handle_join(Client* user, std::vector<std::string> credentials) {
 
     // Add the client to the channel
     channel->addMember(user);
-    user->enterChannel(channelName);
+    user->enterChannel(channelName, channel); // Fixed: Pass `channel` directly
 
     // Send the JOIN message to all channel members
     std::string joinMessage = ":" + user->_obtainNickname() + "!~" + user->_obtainUsername() + " JOIN " + channelName + "\r\n";

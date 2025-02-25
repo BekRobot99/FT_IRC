@@ -1,14 +1,46 @@
-#include "Client.hpp"
-#include "Channel.hpp"
+#include "client.hpp"
+#include "channel.hpp"
 #include <iostream>
 #include <cstring>
 #include <unistd.h>
 
 // Default constructor
-Client::Client() : _fd(-1), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(STATUS_PASS), _activeChannel(nullptr), _hostname(""), _servername("") {}
+Client::Client() 
+    : _fd(-1), 
+      _clientUsername(""), 
+      _clientNickname(""), 
+      _joinedChannels(), 
+      _activeChannel(nullptr), 
+      _clientRealname(""), 
+      _inputBuffer(""), 
+      _outputBuffer(""), 
+      _responseBuffer(""), 
+      _registrationStatus(STATUS_PASS), 
+      _hostname(""), 
+      _servername(""), 
+      _buffer(""), 
+      _is_stopped(false), 
+      _is_invisible(false), 
+      _is_operator(false) {}
 
 // Parameterized constructor
-Client::Client(int fd) : _fd(fd), _clientNickname(""), _clientUsername(""), _clientRealname(""), _registrationStatus(STATUS_PASS), _activeChannel(nullptr), _hostname(""), _servername("") {}
+Client::Client(int fd) 
+    : _fd(fd), 
+      _clientUsername(""), 
+      _clientNickname(""), 
+      _joinedChannels(), 
+      _activeChannel(nullptr), 
+      _clientRealname(""), 
+      _inputBuffer(""), 
+      _outputBuffer(""), 
+      _responseBuffer(""), 
+      _registrationStatus(STATUS_PASS), 
+      _hostname(""), 
+      _servername(""), 
+      _buffer(""), 
+      _is_stopped(false), 
+      _is_invisible(false), 
+      _is_operator(false) {}
 
 // Destructor
 Client::~Client() {
@@ -19,34 +51,43 @@ Client::~Client() {
 
 // Copy constructor
 Client::Client(const Client& other) {
+    _fd = other._fd;
+    _clientUsername = other._clientUsername;
+    _clientNickname = other._clientNickname;
+    _clientRealname = other._clientRealname;
     _hostname = other._hostname;
     _servername = other._servername;
-    _fd = other._fd;
-    _clientUsername= other._clientUsername;
-    _clientNickname= other._clientNickname;
-     _joinedChannels = other._joinedChannels;
-    _clientRealname= other._clientRealname;
-     _inputBuffer = other._inputBuffer;
-   _outputBuffer = other._outputBuffer;
-    _responseBuffer = other._responseBuffer;
+    _registrationStatus = other._registrationStatus;
     _activeChannel = other._activeChannel;
+    _joinedChannels = other._joinedChannels;
+    _inputBuffer = other._inputBuffer;
+    _outputBuffer = other._outputBuffer;
+    _responseBuffer = other._responseBuffer;
+    _buffer = other._buffer;
+    _is_stopped = other._is_stopped;
+    _is_invisible = other._is_invisible;
+    _is_operator = other._is_operator;
 }
 
 // Assignment operator
 Client& Client::operator=(const Client& other) {
     if (this != &other) {
-        _clientNickname= other._clientNickname;
-        _servername = other._servername;
+        _fd = other._fd;
+        _clientUsername = other._clientUsername;
+        _clientNickname = other._clientNickname;
+        _clientRealname = other._clientRealname;
         _hostname = other._hostname;
-        _clientUsername= other._clientUsername;
-       _clientRealname = other._clientRealname;
+        _servername = other._servername;
         _registrationStatus = other._registrationStatus;
-        _joinedChannels = other._joinedChannels;
         _activeChannel = other._activeChannel;
-       _inputBuffer = other._inputBuffer;
+        _joinedChannels = other._joinedChannels;
+        _inputBuffer = other._inputBuffer;
         _outputBuffer = other._outputBuffer;
         _responseBuffer = other._responseBuffer;
-        _fd = other._fd;
+        _buffer = other._buffer;
+        _is_stopped = other._is_stopped;
+        _is_invisible = other._is_invisible;
+        _is_operator = other._is_operator;
     }
     return *this;
 }
@@ -68,10 +109,6 @@ std::string Client::_obtainRealname() const {
     return _clientRealname;
 }
 
-// std::string Client::_obtainRegestrationStatus() const {
-//     return _registrationStatus; // this return type found it wrong 
-// }
-
 std::map<std::string, Channel*> Client::get_connected_channels() const { // Get the channels the client has joined
     return _joinedChannels;
 }
@@ -84,19 +121,24 @@ bool Client::is_registered() const { // Get the client's registration status
     return _registrationStatus == STATUS_REGISTERED;
 }
 
-void Client::updateRegistrationStatus(bool isRegistered) {
-    _registrationStatus = isRegistered ? STATUS_REGISTERED : STATUS_PASS;
+void Client::updateRegistrationStatus() {
+    if (_registrationStatus == STATUS_PASS)
+		_registrationStatus = STATUS_NICK;
+	else if (_registrationStatus == STATUS_NICK)
+		_registrationStatus = STATUS_USER;
+	else if (_registrationStatus == STATUS_USER)
+		_registrationStatus = STATUS_REGISTERED;
 }
 
 void Client::updateUsername(const std::string& newUsername) {
-    _clientNickname= newUsername; // Set the client's nickname (ewUsername = new nickname)
+    _clientNickname = newUsername; // Set the client's nickname (newUsername = new nickname)
 }
 
-void    Client::storeUsername(const std::string& username) {
+void Client::storeUsername(const std::string& username) {
     _clientUsername = username;
 }
 
-void    Client::storeRealname(const std::string& realname) {
+void Client::storeRealname(const std::string& realname) {
     _clientRealname = realname;
 }
 
@@ -104,7 +146,7 @@ std::map<std::string, Channel*> Client::getSubscribedChannels() const {
     return _joinedChannels;
 }
 
-void Client::enterChannel(const std::string& channelName, Channel* targetChannel) {
+void Client::enterChannel(const std::string& channelName, Channel *targetChannel) {
     _joinedChannels[channelName] = targetChannel;
     _activeChannel = targetChannel;
     targetChannel->addMember(this);
@@ -126,7 +168,6 @@ void Client::queueResponseMessage(std::string message) {
     std::cout << "out - " << _clientNickname << ": " << message;
     _responseBuffer += message;
 }
-
 
 ClientStatus Client::getRegistrationStatus() const {
     return _registrationStatus;

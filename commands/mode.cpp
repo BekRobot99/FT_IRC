@@ -1,4 +1,4 @@
-#include "../server.cpp"
+#include "../server.hpp"
 
 void Server::_handle_mode(Client* user, const std::vector<std::string>& credentials) {
     if (credentials.size() < 2) {
@@ -73,7 +73,7 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
                     std::string targetNickname = credentials[paramIdx++];
                     Client* targetClient = _locateClientByNickname(targetNickname);
 
-                    if (!targetClient || !channel.hasMember(targetNickname)) {
+                    if (!targetClient || !channel.hasMember(targetClient)) {
                         user->queueResponseMessage("401 " + user->_obtainNickname() + " " + targetNickname + " :No such nick\r\n");
                         return;
                     }

@@ -1,5 +1,5 @@
-#include "Channel.hpp"
-#include "Client.hpp"
+#include "channel.hpp"
+#include "client.hpp"
 #include <algorithm>
 #include <sstream>
 

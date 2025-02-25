@@ -35,7 +35,7 @@ void Server::_handle_who(Client* user, const std::vector<std::string>& credentia
 
         memberDetails += _serverName + " " + memberClient->_obtainNickname() + " ";
 
-        if (channel.is_operator(memberClient->_obtainNickname()))
+        if (channel.isModerator(memberClient->_obtainNickname()))
         {
             memberDetails += "@";
         }

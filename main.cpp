@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <sstream>
 #include <sstream>
+#include "server.hpp"
 
 bool check_args(int argc, char **argv)
 {
@@ -69,13 +70,13 @@ int main(int argc, char **argv)
     log_server_startup(port, password);
 
     try {
-        // Create and run the server
-        Server server(port, password);
-        server.startrun();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+    // Create and run the server
+    Server server(port, password, "MyIRCServer"); // Add a default server name
+    server.startRun();
+} catch (const std::exception& e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return EXIT_FAILURE;
+}
 
     return EXIT_SUCCESS;
 }

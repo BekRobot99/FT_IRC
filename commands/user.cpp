@@ -22,7 +22,7 @@ void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
     if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty())
     {
         // Update the client's registration status
-        user->updateRegistrationStatus(true);
+        user->updateRegistrationStatus();
 
         // Send a welcome message to the client
         _sendWelcomeMessage(user);

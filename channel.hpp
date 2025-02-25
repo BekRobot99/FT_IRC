@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <set>
-#include "Client.hpp"
+#include "client.hpp"
 
 class Channel
 {
@@ -50,5 +50,5 @@ public:
     void                            updateTopicRestriction (bool isTopicRestricted); // Update the topic restriction
     void                            removeModerator(const std::string& nickname); // Remove a moderator
     void                             setMemberLimit(unsigned short memberLmit); // Set the member limit
-}
+};
 #endif

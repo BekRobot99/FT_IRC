@@ -1,4 +1,4 @@
-#include "../server.h"
+#include "../server.hpp"
 
 void Server::_handle_pass(Client* user, std::vector<std::string> credentials)
 {
@@ -29,9 +29,6 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials)
         user->queueResponseMessage("464 * :Password incorrect\r\n");
         return;
     }
-
-    // Store the password
-    user->storePassword(credentials[0]);
 
     // Proceed to the next registration status
     user->updateRegistrationStatus();

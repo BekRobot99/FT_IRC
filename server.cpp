@@ -1,9 +1,9 @@
-#include "Server.hpp"
+#include "server.hpp"
 #include <map>
 #include <vector>
 
 Server::Server(int sereverPort, std::string serverPassword, std::string serverName)
-    : _sereverPort(port), _serverPassword(serverPassword), _serverName(serverName), _listenerSocket(-1), _numPollDescriptors(0) {
+    : _serverName(serverName), _serverPort(sereverPort), _serverPassword(serverPassword), _listenerSocket(-1), _numPollDescriptors(0) {
     std::time_t now = std::time(0);
     _serverCeationTime = std::ctime(&now);
 
@@ -97,7 +97,7 @@ void Server::_acceptClientConnection() {
     fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 
     // Add the new client socket to the fdpoll vector
-    struct fdpoll clientPollFd;
+    struct pollfd clientPollFd;
     clientPollFd.fd = clientSocket;
     clientPollFd.events = POLLIN;
     _DescriptorsPoll.push_back(clientPollFd);
@@ -121,14 +121,14 @@ void Server::_processClientData(int fd) {
     }
 
     buffer[bytesRead] = '\0';
-    _clientsBySocket[fd].append_to_buffer(buffer);
+    _clientsBySocket[fd].append_to_buffer(buffer); ///////////////////////////
 
     if (_clientsBySocket[fd].is_stopped()) {
         // Client is stopped; buffer the data and return
         return;
     }
 
-    std::string& clientBuffer = _clientsBySocket[fd].get_buffer();
+    std::string clientBuffer = _clientsBySocket[fd].get_buffer(); // Copy the buffer
     size_t pos;
     while ((pos = clientBuffer.find('\n')) != std::string::npos) {
         std::string message = clientBuffer.substr(0, pos);
@@ -481,23 +481,24 @@ void Server::_process_command(int clientSocket, const std::string& rawCommand) {
 // }
 
 // Handle CAP command
-void Server::_handle_cap(Client* user, const std::vector<std::string>& credentials) {
-    if (credentials.empty()) {
-        send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
-        return;
-    }
+// old version
+// void Server::_handle_cap(Client* user, const std::vector<std::string>& credentials) {
+//     if (credentials.empty()) {
+//         send(user->getSocket(), "ERROR : Not enough parameters\r\n", 30, 0);
+//         return;
+//     }
 
-    std::string subcommand = credentials[0];
-    if (subcommand == "LS") {
-        send(user->getSocket(), "CAP * LS :multi-prefix sasl\r\n", 30, 0);
-    } else if (subcommand == "REQ") {
-        send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
-    } else if (subcommand == "END") {
-        send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
-    } else {
-        send(user->getSocket(), "ERROR : Invalid subcommand\r\n", 30, 0);
-    }
-}
+//     std::string subcommand = credentials[0];
+//     if (subcommand == "LS") {
+//         send(user->getSocket(), "CAP * LS :multi-prefix sasl\r\n", 30, 0);
+//     } else if (subcommand == "REQ") {
+//         send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
+//     } else if (subcommand == "END") {
+//         send(user->getSocket(), "CAP * ACK :multi-prefix sasl\r\n", 33, 0);
+//     } else {
+//         send(user->getSocket(), "ERROR : Invalid subcommand\r\n", 30, 0);
+//     }
+// }
 
 std::vector<std::string> Server::_tokenizeString(const std::string& input, char separator) {
     std::vector<std::string> result;
@@ -526,7 +527,10 @@ void Server::_disconnectClient(Client* user, std::string exitMessage) {
 
 // Broadcast a message to all channels a client has joined
 void Server::_transmit_to_all_connected_channels(Client* user, const std::string& msg) {
-    std::vector<std::string> channels = user->get_connected_channels();
+    std::vector<std::string> channels;
+    for (const auto& pair : user->get_connected_channels()) {
+    channels.push_back(pair.first); // Add channel names to the vector
+    }
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it) {
         Channel* channel = &_channelsByName[*it];
         _distribute_msg_to_channel_members(user, channel, msg, false);
@@ -589,11 +593,10 @@ void Server::_distributeMessageToChannelMembers(Client* sender, Channel* channel
 
 // send a message to all members of a channel
 // new version
-_notifyAllSubscribedChannels(const std::string& message)
-{
+void Server::_notifyAllSubscribedChannels(const std::string& message) {
     for (std::map<int, Client>::iterator it = _clientsBySocket.begin(); it != _clientsBySocket.end(); ++it) {
         Client* user = &it->second;
-        client->queueResponseMessage(message);
+        user->queueResponseMessage(message);
     }
 }
 
@@ -721,7 +724,7 @@ void Server::_deleteClient(int clientFd) {
     close(clientFd);
     _clientsBySocket.erase(clientFd);
 
-    for (std::vector<struct fdpoll>::iterator it = _DescriptorsPoll.begin(); it != _DescriptorsPoll.end(); ++it) {
+    for (std::vector<struct pollfd>::iterator it = _DescriptorsPoll.begin(); it != _DescriptorsPoll.end(); ++it) {
         if (it->fd == clientFd) {
             _DescriptorsPoll.erase(it);
             _numPollDescriptors--;
