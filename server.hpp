@@ -39,11 +39,11 @@ class Server
         void					_acceptClientConnection();
         void                   _handleEvents();
         void                   _processClientData(int fd);
-        void                    _handleClientDisconnection(Client* client);
-        void                    _transmit_to_all_connected_channels(Client* client, const std::string& message);
+        void                    _handleClientDisconnection(Client* user, std::string exitMessage);
+        void                    _transmit_to_all_connected_channels(Client *user, const std::string& msg);
         void					_distribute_msg_to_channel_members(Client *sender, Channel *channel, const std::string& msg, bool includeSender);
         void					_disconnectClient(Client* user, std::string exitMessage);
-        void					_deleteClient(int clientFd);
+        void					_deleteClient(Client* clientFd);
         void                    _process_command(int clientSocket, const std::string& rawCommand);
         std::vector<std::string> _tokenizeString(const std::string& input, char separator);
         void                     _notifyAllSubscribedChannels(const std::string& message);
@@ -70,7 +70,7 @@ class Server
         // Utils
         bool					_checkNicknameValid(const std::string& nickname);
         bool					_isUsernameTaken(const std::string& username);
-        void                   _distributeMessageToChannelMembers(Client* sender, Channel* channel, const std::string& msg, bool includeSender);
+        void                   _distributeMessageToChannelMembers(const std::string& msg);
         // void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message); unused after updating nick command
         void                    _setup_server_socket();
         void                     eliminateDuplicateEntries(std::vector<std::string>& vec);
