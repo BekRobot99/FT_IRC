@@ -6,6 +6,8 @@
     #include <map>
     #include <vector>
 
+    #define MAX_MSG_SIZE  512
+
     class Channel;
 
     // Enum to represent the client's registration status
@@ -49,20 +51,20 @@
         std::string                     _obtainUsername() const;            // Get the client's username
         std::string                     _obtainHostname() const;            // Get the client's hostname
         std::string                     _obtainRealname() const;            // Get the client's real name
-        std::map<std::string, Channel*> get_connected_channels() const;     // Get the channels the client has joined
+       std::map<std::string, Channel*>  get_connected_channels();     // Get the channels the client has joined
         int                             getSocket() const;                  // Get the client's file descriptor
         bool                            is_registered() const;              // Check if the client is fully registered
         ClientStatus                    getRegistrationStatus() const;      // Get the client's registration status
 
         // Setters
         void                            updateRegistrationStatus(); // Update the client's registration status
-        void                            updateUsername(const std::string& newUsername); // Set the client's nickname
-        void                            storeUsername(const std::string& username); // Set the client's username
-        void                            storeRealname(const std::string& realname); // Set the client's real name
+        void                            updateUsername(std::string& nickname); // Set the client's nickname
+        void                            storeUsername(std::string& username); // Set the client's username
+        void                            storeRealname(std::string& realname); // Set the client's real name
 
         // Channel Management
         std::map<std::string, Channel*> getSubscribedChannels() const;     // Get the channels the client has joined
-        void                            enterChannel(const std::string& channelName, Channel* targetChannel); // Enter a channel
+        void                            enterChannel(std::string channelName, Channel *targetChannel); // Enter a channel
         void                            exitChannel(const std::string& channelName); // Exit a channel
 
         // Buffer Management
@@ -76,6 +78,15 @@
         void                            set_operator(bool value) { _is_operator = value; }
         void                            append_to_buffer(const std::string& data) { _buffer += data;}
         std::string                     get_buffer() const { return _buffer;}
+        std::string                     obtainInputBuffer();                // Get the input buffer
+        void                             storeInInputBuffer(char* buffer); // Store data in the input buffer
+        void                            truncateInputBuffer(size_t pos);   // Truncate the input buffer
+        bool                          is_incoming_msg_complete() const;  // Check if an incoming message is complete
+        bool                          is_incoming_msg_too_long() const;  // Check if an incoming message is too long
+        bool                          is_response_complete() const;      // Check if a response is complete
+        short                         send_out_buffer();                 // Send the output buffer
+
+
     };
 
     #endif
