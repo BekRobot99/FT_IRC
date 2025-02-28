@@ -118,7 +118,7 @@ void Server::_handle_channel_mode(Client* user, const std::vector<std::string>& 
 								if (set_mode)
 									channel.assignModerator(targetNickname);
 								else
-									channel.remove_operator(targetNickname);
+									channel.removeModerator(targetNickname);
 								_distribute_msg_to_channel_members(targetClient, &channel, ":" + user->_obtainNickname() + " MODE " + channelName + " " + (set_mode ? "+o" : "-o") + " " + targetNickname + "\r\n", true);
 							}
 							else

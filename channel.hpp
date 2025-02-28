@@ -36,7 +36,7 @@ public:
     bool                            isModerator(const std::string& nickname) const; // Check if a nickname belongs to a moderator (operator)
     void                            updateDiscussionTopic(const std::string& newTopic); // Update the discussion topic
     void                             assignModerator(const std::string& username); // Assign a moderator to the channel
-    void                            addInvitedUser(Client* user); // Add an invited user
+    void                            addInvitedUser(const std::string& user); // Add an invited user
     bool                            isUserInvited(const std::string& nickname) const; // Check if a nickname is invited
     void                            removeMember(Client* user); // Remove a client from the channel
     bool                            isAtCapacity() const; // Check if the channel is at capacity
@@ -50,5 +50,9 @@ public:
     void                            updateTopicRestriction (bool isTopicRestricted); // Update the topic restriction
     void                            removeModerator(const std::string& nickname); // Remove a moderator
     void                             setMemberLimit(unsigned short memberLmit); // Set the member limit
+    short                           getTotalMembers() const; // Get the total number of members
+    unsigned short                  getMemberLimit() const; // Get the member limit
+    std::string                     getGroupName() const; // Get the channel name
+    std::string                     generateModeFlags() const; // Generate the mode flags
 };
 #endif
