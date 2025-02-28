@@ -3,13 +3,13 @@
 #include <vector>
 
 // updated to avoid memory leaks
-Server::Server(int sereverPort, std::string serverPassword, std::string serverName) : _serverPort(sereverPort), _serverPassword(serverPassword), _serverName(serverName), _numPollDescriptors(0), _listenerSocket(-1)
+Server::Server(int port, std::string password, std::string server_name) : _serverPort(port), _serverPassword(password), _serverName(server_name), _numPollDescriptors(0), _listenerSocket(-1)
 {
 	time_t now = time(0);
-	tm* serverCeationTime = localtime(&now);
+	tm* creation_tm = localtime(&now);
 
 	char buffer[20];
-	strftime(buffer, sizeof(buffer), "%d-%b-%Y", serverCeationTime); // or "%b %d %Y" for an alternative format
+	strftime(buffer, sizeof(buffer), "%d-%b-%Y", creation_tm); // or "%b %d %Y" for an alternative format
 
 	_serverCeationTime = std::string(buffer);
 };
