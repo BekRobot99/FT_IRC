@@ -1,30 +1,35 @@
 #include "../server.hpp"
 
-void Server::_handle_user(Client* user, std::vector<std::string> credentials) {
-    // Check if the client is in the correct state to send USER
+// updated to handle more edge cases
+void Server::_handle_user(Client* user, std::vector<std::string> credentials)
+{
+    std::cout << "Executing USER command" << std::endl;
+
     if (user->getRegistrationStatus() != STATUS_USER)
     {
-        user->queueResponseMessage("462 * ERROR : You may not reregister\r\n");
+        std::cout << "Client is not in the correct state for USER command" << std::endl;
+        user->queueResponseMessage("462 * :You may not reregister\r\n");
         return;
     }
 
-    // Check if all required parameters are provided
     if (credentials.size() < 4)
     {
+        std::cout << "Not enough parameters for USER command" << std::endl;
         user->queueResponseMessage("461 " + user->_obtainNickname() + " USER :Not enough parameters\r\n");
         return;
     }
 
-    user->storeUsername(credentials[0]); 
+    // std::string username = credentials[0];
+    // std::string hostname = credentials[1];
+    // std::string servername = credentials[2];
+    // std::string realname = credentials[3];
+
+    // Set the user's username and realname
+    user->storeUsername(credentials[0]);
     user->storeRealname(credentials[3]);
 
-    // Check if the client has both a nickname and a username
-    if (!user->_obtainNickname().empty() && !user->_obtainUsername().empty())
-    {
-        // Update the client's registration status
-        user->updateRegistrationStatus();
+    std::cout << "Username set to: " << credentials[0] << std::endl;
+    std::cout << "Realname set to: " << credentials[3] << std::endl;
 
-        // Send a welcome message to the client
-        _sendWelcomeMessage(user);
-    }
+    _sendWelcomeMessage(user);
 }

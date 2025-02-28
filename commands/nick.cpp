@@ -1,32 +1,35 @@
 #include "../server.hpp"
 
-void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
-    // Check if the client is in the correct state to send NICK
+// updated to handle more edge cases
+void Server::_handle_nick(Client* user, std::vector<std::string> credentials)
+{
+    std::cout << "Executing NICK command" << std::endl;
+
     if (user->getRegistrationStatus() == STATUS_PASS)
     {
+        std::cout << "Client has not registered yet" << std::endl;
         user->queueResponseMessage("451 * :You have not registered\r\n");
         return;
     }
 
-    // Check if the nickname parameter is provided
-    if (credentials.empty())
+    if (credentials.size() == 0)
     {
-        user->queueResponseMessage("431 * ERROR : No nickname given\r\n");
+        std::cout << "No nickname provided" << std::endl;
+        user->queueResponseMessage("431 * :No nickname given\r\n");
         return;
     }
 
     std::string nickname = credentials[0];
-
-    // Validate the nickname
     if (!_checkNicknameValid(nickname))
     {
+        std::cout << "Invalid nickname: " << nickname << std::endl;
         user->queueResponseMessage("432 * " + nickname + " :Erroneous nickname\r\n");
         return;
     }
 
-    // Check if the nickname is already in use
     if (_isUsernameTaken(nickname))
     {
+        std::cout << "Nickname already in use: " << nickname << std::endl;
         user->queueResponseMessage("433 * " + nickname + " :Nickname is already in use\r\n");
         return;
     }
@@ -35,26 +38,30 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials) {
     std::string previousNickname = user->_obtainNickname();
     user->updateUsername(nickname);
 
-    // Remove the old nickname from the registered usernames list
-    if (!previousNickname.empty())
+    if (previousNickname.size() != 0)
     {
         std::vector<std::string>::iterator it = std::find(_registeredUsernames.begin(), _registeredUsernames.end(), previousNickname);
         if (it != _registeredUsernames.end())
+        {
             _registeredUsernames.erase(it);
+        }
     }
 
-    // Add the new nickname to the registered usernames list
     _registeredUsernames.push_back(nickname);
 
-    // If the client was already registered, broadcast the nickname change
+    // If the client was already registered, send a notification to other users in the same channels
     if (user->getRegistrationStatus() == STATUS_REGISTERED)
     {
         std::string nick_change_msg = ":" + previousNickname + " NICK " + nickname + "\r\n";
-        _notifyAllSubscribedChannels(nick_change_msg);
+        _distributeMessageToChannelMembers(nick_change_msg);
+        std::cout << "Broadcasted nickname change: " << previousNickname << " -> " << nickname << std::endl;
         return;
     }
 
     // If status is NICK, proceed to USER
     if (user->getRegistrationStatus() == STATUS_NICK)
+    {
+        std::cout << "Proceeding to USER command" << std::endl;
         user->updateRegistrationStatus();
+    }
 }
