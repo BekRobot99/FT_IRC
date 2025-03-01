@@ -5,13 +5,6 @@ void Server::_handle_join(Client* user, const std::vector<std::string>& credenti
 {
     std::cout << "Executing JOIN command" << std::endl;
 
-    if (credentials[0].empty())
-    {
-        std::cout << "No channel specified" << std::endl;
-        user->queueResponseMessage("403 * :No such channel\r\n");
-        return;
-    }
-
     if (user->getRegistrationStatus() != STATUS_REGISTERED)
     {
         std::cout << "Client is not registered" << std::endl;
@@ -19,24 +12,24 @@ void Server::_handle_join(Client* user, const std::vector<std::string>& credenti
         return;
     }
 
-    if (credentials.empty())
+    if (credentials.size() < 1)
     {
         std::cout << "Not enough parameters for JOIN command" << std::endl;
         user->queueResponseMessage("461 " + user->_obtainNickname() + " JOIN :Not enough parameters\r\n");
         return;
     }
 
-    std::vector<std::string> channels = _tokenizeString(credentials[0], ',');
-    std::vector<std::string> key;
-    if (credentials.empty())
+    std::vector<std::string> channelList = _tokenizeString(credentials[0], ',');
+    std::vector<std::string> passwordList;
+    if (credentials.size() > 1)
     {
-        key = _tokenizeString(credentials[1], ',');
+        passwordList = _tokenizeString(credentials[1], ',');
     }
 
-    for (size_t i = 0; i < channels.size(); ++i)
+    for (size_t i = 0; i < channelList.size(); ++i)
     {
-        const std::string& channelName = channels[i];
-        std::string key = i < key.size() ? key[i] : "";
+        const std::string& channelName = channelList[i];
+        std::string key = i < passwordList.size() ? passwordList[i] : "";
 
         if (_channelsByName.find(channelName) == _channelsByName.end())
         {
@@ -86,8 +79,8 @@ void Server::_handle_join(Client* user, const std::vector<std::string>& credenti
 
         channel.addMember(user);
         user->enterChannel(channelName, &channel);
-        std::string joinMessage = ":" + user->_obtainNickname() + "!~" + user->_obtainUsername() + " JOIN " + channelName + "\r\n";
-        _distribute_msg_to_channel_members(user, &channel, joinMessage, false);
+        std::string join_msg = ":" + user->_obtainNickname() + "!~" + user->_obtainUsername() + " JOIN " + channelName + "\r\n";
+        _distribute_msg_to_channel_members(user, &channel, join_msg, false);
 
         // Send the list of users in the channel to the client
         std::string namesList = channel.getMemberList();

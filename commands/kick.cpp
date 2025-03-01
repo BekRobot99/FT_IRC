@@ -18,11 +18,11 @@ void Server::_handle_kick(Client* user, const std::vector<std::string>& credenti
     }
 
     std::string channelName = credentials[0];
-    std::string targetNickname = credentials[1];
-    std::string reason = "No reason specified";
+    std::string targetUserNickname  = credentials[1];
+    std::string kickReason  = "No reason specified";
 
     if (credentials.size() >= 3)
-        reason = credentials[2];
+		kickReason  = credentials[2];
 	// Check if the client is an operator of the channel
 	if (!_channelsByName.count(channelName))
 	{
@@ -38,17 +38,17 @@ void Server::_handle_kick(Client* user, const std::vector<std::string>& credenti
 	}
 
 	// Check if the target user is in the channel
-	Client* targetClient = _locateClientByNickname(targetNickname);
-	if (targetClient == NULL || !channel.hasMember(targetClient))
+	Client* targetClient  = _locateClientByNickname(targetUserNickname );
+	if (targetClient  == NULL || !channel.hasMember(targetClient ))
 	{
-		user->queueResponseMessage("441 " + user->_obtainNickname() + " " + targetNickname + " " + channelName + " :They aren't on that channel\r\n");
+		user->queueResponseMessage("441 " + user->_obtainNickname() + " " + targetUserNickname  + " " + channelName + " :They aren't on that channel\r\n");
 		return;
 	}
 
 	// Notify all users joined in the channel user
-	std::string kickMessage = ":" + user->_obtainNickname() + " KICK " + channelName + " " + targetNickname + " :" + reason + "\r\n";
-	_distribute_msg_to_channel_members(targetClient, &channel, kickMessage, true);
+	std::string kickNotification  = ":" + user->_obtainNickname() + " KICK " + channelName + " " + targetUserNickname  + " :" + kickReason  + "\r\n";
+	_distribute_msg_to_channel_members(targetClient , &channel, kickNotification , true);
 
 	// Remove the target user from the channel
-	channel.removeMember(targetClient);
+	channel.removeMember(targetClient );
 }

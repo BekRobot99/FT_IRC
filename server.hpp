@@ -57,7 +57,7 @@ class Server
         void                    _handle_join(Client* user, std::vector<std::string> credentials);
         void                   _handle_privmsg(Client* user, std::vector<std::string> credentials);
         Client*                 _locateClientByNickname(const std::string& nickname);
-        void                    _handle_quit(Client* user, std::vector<std::string> credentials);
+        void                    _handle_quit(Client* user, const std::vector<std::string>& credentials);
         void                    _handle_who(Client* user, const std::vector<std::string>& credentials);
         void                    _handle_topic(Client* user, const std::vector<std::string>& credentials); // Fixed: Ad
         void                    _handle_mode(Client* user, const std::vector<std::string>& credentials);
@@ -73,7 +73,6 @@ class Server
         void                   _distributeMessageToChannelMembers(const std::string& msg);
         // void                   _notifyAllSubscribedChannels(Client* sender, const std::string& message); unused after updating nick command
         void                    _setup_server_socket();
-        void                     eliminateDuplicateEntries(std::vector<std::string>& vec);
         
 };
 

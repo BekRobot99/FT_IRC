@@ -1,5 +1,17 @@
 #include "../server.hpp"
 
+void    eliminateDuplicateEntries(std::vector<std::string>& vec) {
+	for (size_t i = 0; i < vec.size(); ++i) {
+		for (size_t j = i + 1; j < vec.size();) {
+			if (vec[i] == vec[j]) {
+				vec.erase(vec.begin() + j);
+			} else {
+				++j;
+			}
+		}
+	}
+}
+
 // updated to handle multiple channels + more edge cases
 void Server::_handle_privmsg(Client* user, const std::vector<std::string>& credentials)
 {
@@ -41,7 +53,7 @@ void Server::_handle_privmsg(Client* user, const std::vector<std::string>& crede
 
 			// Relay the message to all clients in the channel
 			const std::vector<Client*>& clientsInChannel = channel.getMembers();
-			for (std::vector<Client*>::const_iterator it = clientsInChannel.begin(); it != clients_in_channel.end(); ++it)
+			for (std::vector<Client*>::const_iterator it = clientsInChannel.begin(); it != clientsInChannel.end(); ++it)
 			{
 				Client* clientInChannel = *it;
 				if (clientInChannel != user)
@@ -56,7 +68,7 @@ void Server::_handle_privmsg(Client* user, const std::vector<std::string>& crede
 			Client* targetClient = _locateClientByNickname(targetName);
 			if (targetClient == NULL)
 			{
-				client->queueResponseMessage("401 " + user->_obtainNickname() + " " + targetName + " :No such nick\r\n");
+				user->queueResponseMessage("401 " + user->_obtainNickname() + " " + targetName + " :No such nick\r\n");
 				return;
 			}
 			std::string msgToSend = ":" + user->_obtainNickname() + " PRIVMSG " + targetName + " :" + message + "\r\n";

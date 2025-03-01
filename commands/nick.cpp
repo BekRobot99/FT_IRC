@@ -54,7 +54,7 @@ void Server::_handle_nick(Client* user, std::vector<std::string> credentials)
     {
         std::string nick_change_msg = ":" + previousNickname + " NICK " + nickname + "\r\n";
         _distributeMessageToChannelMembers(nick_change_msg);
-        std::cout << "Broadcasted nickname change: " << previousNickname << " -> " << nickname << std::endl;
+        std::cout << "Broadcasted nickname change: " << previousNickname << " -> " << nickname  << std::endl;
         return;
     }
 

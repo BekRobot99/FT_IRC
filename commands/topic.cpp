@@ -36,7 +36,7 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
         return;
     }
 
-    // When credentials is one you want to get the topic
+    // When params is one you want to get the topic
     if (credentials.size() == 1)
     {
         if (channel.obtainTopic() == std::string(""))
@@ -45,7 +45,7 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
         }
         else
         {
-            client->queueResponseMessage("332 " + channelName + " :" + channel.obtainTopic() + "\r\n");
+            user->queueResponseMessage("332 " + channelName + " :" + channel.obtainTopic() + "\r\n");
         }
         return;
     }
@@ -59,5 +59,5 @@ void Server::_handle_topic(Client* user, const std::vector<std::string>& credent
 
 	std::string newTopic = credentials[1];
 	channel.updateDiscussionTopic(newTopic);
-	_distribute_msg_to_channel_members(user, &channel, ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + target_channel.obtainTopic() + "\r\n", true);
+	_distribute_msg_to_channel_members(user, &channel, ":" + user->_obtainNickname() + " TOPIC " + channelName + " :" + channel.obtainTopic() + "\r\n", true);
 }

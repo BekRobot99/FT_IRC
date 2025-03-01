@@ -19,17 +19,17 @@ void Server::_handle_user(Client* user, std::vector<std::string> credentials)
         return;
     }
 
-    // std::string username = credentials[0];
+    std::string username = credentials[0];
     // std::string hostname = credentials[1];
     // std::string servername = credentials[2];
-    // std::string realname = credentials[3];
+    std::string realname = credentials[3];
 
     // Set the user's username and realname
-    user->storeUsername(credentials[0]);
-    user->storeRealname(credentials[3]);
+    user->storeUsername(username);
+    user->storeRealname(realname);
 
-    std::cout << "Username set to: " << credentials[0] << std::endl;
-    std::cout << "Realname set to: " << credentials[3] << std::endl;
+    std::cout << "Username set to: " << username << std::endl;
+    std::cout << "Realname set to: " << realname << std::endl;
 
     _sendWelcomeMessage(user);
 }

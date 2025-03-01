@@ -17,7 +17,7 @@ void Server::_handle_invite(Client* user, const std::vector<std::string>& creden
 		return;
 	}
 
-	std::string targetNickname = credentials[0];
+	std::string targetNickname = credentials[0]; 
 	std::string channelName = credentials[1];
 	
 	// Check if channel exists

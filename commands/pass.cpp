@@ -1,5 +1,6 @@
 #include "../server.hpp"
 
+// updated
 void Server::_handle_pass(Client* user, std::vector<std::string> credentials)
 {
     std::cout << "Executing PASS command" << std::endl;
@@ -10,7 +11,7 @@ void Server::_handle_pass(Client* user, std::vector<std::string> credentials)
         return;
     }
 
-    if (credentials.empty())
+    if (credentials.size() < 1)
     {
         std::cout << "Not enough parameters for PASS command" << std::endl;
         user->queueResponseMessage("461 " + user->_obtainNickname() + " PASS :Not enough parameters\r\n");
