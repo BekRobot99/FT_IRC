@@ -3,16 +3,17 @@
 #include <vector>
 
 // updated to avoid memory leaks
-Server::Server(int sereverPort, std::string serverPassword, std::string serverName) : _serverPort(sereverPort), _serverPassword(serverPassword), _serverName(serverName), _numPollDescriptors(0), _listenerSocket(-1)
+Server::Server(int serverPort, std::string serverPassword, std::string serverName)
+    : _serverName(serverName), _serverPort(serverPort), _serverPassword(serverPassword), _serverCeationTime(""), _listenerSocket(-1), _numPollDescriptors(0)
 {
-	time_t now = time(NULL);
-	tm* serverCeationTime = localtime(&now);
+    time_t now = time(NULL);
+    tm* serverCreationTime = localtime(&now);
 
-	char buffer[20];
-	strftime(buffer, sizeof(buffer), "%d-%b-%Y", serverCeationTime); // or "%b %d %Y" for an alternative format
+    char buffer[20];
+    strftime(buffer, sizeof(buffer), "%d-%b-%Y", serverCreationTime); // or "%b %d %Y" for an alternative format
 
-	_serverCeationTime = std::string(buffer);
-};
+    _serverCeationTime = std::string(buffer);
+}
 
 // updated to avoid memory leaks
 Server::~Server()
@@ -425,10 +426,10 @@ void Server::_handleClientDisconnection(Client* user, std::string exitMessage)
 
 // check from here
 // Disconnect a client
-void Server::_disconnectClient(Client* user, std::string exitMessage) {
-    _transmit_to_all_connected_channels(user, exitMessage);
-    _deleteClient(user->getSocket());
-}
+// void Server::_disconnectClient(Client* user, std::string exitMessage) {
+//     _transmit_to_all_connected_channels(user, exitMessage);
+//     _deleteClient(user->getSocket());
+// }
 
 // Broadcast a message to all channels a client has joined
 // errors fixed
