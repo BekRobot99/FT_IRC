@@ -1,15 +1,19 @@
 #include "../server.hpp"
 
-void	Server::_handle_ping(Client* user, std::vector<std::string> credentials)
+// final version
+void Server::_handle_ping(Client* user, const std::vector<std::string>& credentials)
 {
-	if (credentials.size() < 1)
-	{
-		user->queueResponseMessage("409 * :No origin specified\r\n");
-		return;
-	}
+    std::cout << "Executing PING command" << std::endl;
 
-	std::string origin = credentials[0];
-	std::string pongMessage = "PONG " + origin + "\r\n";
-	// Send Pong
-	user->queueResponseMessage(pongMessage);
+    if (credentials.size() < 1)
+    {
+        std::cout << "No origin specified for PING command" << std::endl;
+        user->queueResponseMessage("409 * :No origin specified\r\n");
+        return;
+    }
+
+    std::string pongMessage = "PONG " + credentials[0] + "\r\n";
+    user->queueResponseMessage(pongMessage);
+
+    std::cout << "Responded to PING with PONG: " << credentials[0] << std::endl;
 }

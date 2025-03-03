@@ -1,9 +1,15 @@
 #include "../server.hpp"
 
-// fixed
+// final version
 void Server::_handle_cap(Client* user, const std::vector<std::string>& credentials)
 {
-    if (credentials.size() > 0)
+    if (credentials.empty())
+    {
+        user->queueResponseMessage("421 * CAP :Not enough parameters\r\n");
+        return;
+    }
+
+    else if (credentials.size() > 0)
     {
         if (credentials[0] == "LS")
         {
@@ -11,6 +17,7 @@ void Server::_handle_cap(Client* user, const std::vector<std::string>& credentia
         }
         else if (credentials[0] == "END")
         {
+            // Do nothing, CAP negotiation has ended
         }
         else
         {

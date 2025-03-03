@@ -40,7 +40,6 @@ private:
     void _handleClientDisconnection(Client* user, std::string exitMessage);
     void _transmit_to_all_connected_channels(Client* user, const std::string& msg);
     void _distribute_msg_to_channel_members(Client* sender, Channel* channel, const std::string& msg, bool includeSender);
-    void _disconnectClient(Client* user, std::string exitMessage);
     void _deleteClient(Client* clientFd);
     void _process_command(int clientSocket, const std::string& rawCommand);
     std::vector<std::string> _tokenizeString(const std::string& input, char separator);
@@ -51,7 +50,7 @@ private:
     void _handle_nick(Client* user, std::vector<std::string> credentials);
     void _handle_user(Client* user, std::vector<std::string> credentials);
     void _sendWelcomeMessage(Client* user);
-    void _handle_ping(Client* user, std::vector<std::string> credentials);
+    void _handle_ping(Client* user, const std::vector<std::string>& credentials);
     void _handle_join(Client* user, const std::vector<std::string>& credentials);
     void _handle_privmsg(Client* user, const std::vector<std::string>& credentials);
     Client* _locateClientByNickname(const std::string& nickname);
